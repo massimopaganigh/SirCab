@@ -66,8 +66,8 @@
 
                 ddfFileContent.AppendLine($@";*** MakeCAB Directive file;
 .OPTION EXPLICIT
-.Set CabinetNameTemplate={_fileName.WithQuotes}
-.Set DiskDirectory1={_destinationDirectory.WithQuotes}
+.Set CabinetNameTemplate={$"{_fileName}.cab".WithQuotes()}
+.Set DiskDirectory1={_destinationDirectory.WithQuotes()}
 .Set MaxDiskSize=0
 .Set Cabinet=on
 .Set Compress=on
@@ -84,11 +84,12 @@
                     ddfFileContent.AppendLine(ddfFileRow.Row);
 
                 string ddfFileName = $"{_fileName}.ddf";
+                string ddfFilePath = Path.Combine(_destinationDirectory, ddfFileName);
 
-                File.WriteAllText(ddfFileName, ddfFileContent.ToString(), Encoding.Default);
+                File.WriteAllText(ddfFilePath, ddfFileContent.ToString(), Encoding.Default);
                 Log.Information("{0} created.", ddfFileName);
 
-                return Path.Combine(_destinationDirectory, ddfFileName);
+                return ddfFilePath;
             }
             catch (Exception ex)
             {

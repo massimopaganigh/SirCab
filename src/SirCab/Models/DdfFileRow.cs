@@ -6,6 +6,6 @@
 
         public string? Path { get; set; }
 
-        public string? Row => $"{FullName.WithQuotes} {Path.WithQuotes}";
+        public string? Row => $"{FullName.WithQuotes()} {Path.WithQuotes()}";
     }
 }

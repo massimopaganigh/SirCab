@@ -10,6 +10,17 @@
         {
             try
             {
+                Console.WriteLine(@"
+   ▄████████  ▄█     ▄████████  ▄████████    ▄████████ ▀█████████▄
+  ███    ███ ███    ███    ███ ███    ███   ███    ███   ███    ███
+  ███    █▀  ███▌   ███    ███ ███    █▀    ███    ███   ███    ███
+  ███        ███▌  ▄███▄▄▄▄██▀ ███          ███    ███  ▄███▄▄▄██▀
+▀███████████ ███▌ ▀▀███▀▀▀▀▀   ███        ▀███████████ ▀▀███▀▀▀██▄
+         ███ ███  ▀███████████ ███    █▄    ███    ███   ███    ██▄
+   ▄█    ███ ███    ███    ███ ███    ███   ███    ███   ███    ███
+ ▄████████▀  █▀     ███    ███ ████████▀    ███    █▀  ▄█████████▀
+                    ███    ███ by SirHurt CSR Team
+");
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
                 Configuration configuration = configurationService.FromArgs(args);
@@ -34,7 +45,7 @@
                 {
                     CreateNoWindow = true,
                     FileName = "makecab.exe",
-                    Arguments = $"/f {ddfFilePath.WithQuotes}",
+                    Arguments = $"/f {ddfFilePath.WithQuotes()}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false
