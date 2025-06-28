@@ -2,6 +2,7 @@
 
 setlocal enabledelayedexpansion
 
+set /p version=<..\VERSION
 set "release_dir=..\out\release"
 set "upx_path=..\src\ext\upx-5.0.1-win64\upx.exe"
 set "sircab_publish_dir=..\out\SirCab"
@@ -46,7 +47,7 @@ if %ERRORLEVEL% neq 0 (
 
 echo Building SirCab...
 
-dotnet publish ..\src\SirCab\SirCab.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_publish_dir%" -c Release
+dotnet publish ..\src\SirCab\SirCab.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_publish_dir%" -p:Version=%version% -c Release
 
 if %ERRORLEVEL% neq 0 (
     echo Build of SirCab failed.
