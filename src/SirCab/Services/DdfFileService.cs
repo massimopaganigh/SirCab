@@ -4,13 +4,15 @@
     {
         private const string _compressionType = "LZX";
         private const int _compressionMemory = 21;
-        private const int _maxDdfFileRowInt = 1024;
+        private const int _maxDdfFileRowInt = 2048;
 
         private readonly string? _sourceDirectory = configuration.SourceDirectory;
         private readonly string? _destinationDirectory = configuration.DestinationDirectory;
         private readonly string? _fileName = configuration.FileName;
 
-        private static List<DdfFileRow> GetDdfFileRowList(string directory)
+        private static List<DdfFileRow> GetDdfFileRowList(string directory) => GetDdfFileRowList(directory, directory);
+
+        private static List<DdfFileRow> GetDdfFileRowList(string directory, string rootDirectory)
         {
             List<DdfFileRow> ddfFileRowList = [];
 
@@ -19,7 +21,7 @@
                 ddfFileRowList.Add(new DdfFileRow
                 {
                     FullName = file,
-                    Path = file.Replace(directory, string.Empty).TrimStart(Path.DirectorySeparatorChar)
+                    Path = Path.GetRelativePath(rootDirectory, file)
                 });
 
                 Log.Information("{0} processed.", file);
@@ -27,7 +29,7 @@
 
             foreach (string subDirectory in Directory.GetDirectories(directory))
             {
-                ddfFileRowList.AddRange(GetDdfFileRowList(subDirectory));
+                ddfFileRowList.AddRange(GetDdfFileRowList(subDirectory, rootDirectory));
 
                 Log.Information("{0} processed.", subDirectory);
             }
