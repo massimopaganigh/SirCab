@@ -4,7 +4,7 @@
     {
         private const string _compressionType = "LZX";
         private const int _compressionMemory = 21;
-        private const int _maxDdfFileRowInt = 1024;
+        private const int _maxDdfFileRowInt = 2048;
 
         private readonly string? _sourceDirectory = configuration.SourceDirectory;
         private readonly string? _destinationDirectory = configuration.DestinationDirectory;
