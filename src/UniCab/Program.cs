@@ -11,6 +11,7 @@
             try
             {
                 Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+                string? framework = AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName;
                 OperatingSystem oSVersion = Environment.OSVersion;
 
                 Console.WriteLine($@"
@@ -20,8 +21,8 @@
 ███    ███ ███   ███ ███▌ ███          ███    ███  ▄███▄▄▄██▀
 ███    ███ ███   ███ ███▌ ███        ▀███████████ ▀▀███▀▀▀██▄
 ███    ███ ███   ███ ███  ███    █▄    ███    ███   ███    ██▄
-███    ███ ███   ███ ███  ███    ███   ███    ███   ███    ███
-████████▀   ▀█   █▀  █▀   ████████▀    ███    █▀  ▄█████████▀  {version} - {oSVersion}
+███    ███ ███   ███ ███  ███    ███   ███    ███   ███    ███ {version} - {framework}
+████████▀   ▀█   █▀  █▀   ████████▀    ███    █▀  ▄█████████▀ {oSVersion}
 ");
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
