@@ -2,11 +2,16 @@
 {
     internal class Program
     {
-        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data}" ?? string.Empty);
+        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
 
         private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Log.Error($"(makecab.exe) {e.Data}" ?? string.Empty);
+            string errorData = e.Data ?? string.Empty;
+
+            Log.Error($"(makecab.exe) {errorData}");
+
+            if (string.IsNullOrEmpty(errorData))
+                return; // If the error data is empty, we do not exit with an error code.
 
             Environment.ExitCode = 1;
         }
