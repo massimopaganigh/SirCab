@@ -47,7 +47,7 @@
                     || _compressionType == null)
                 {
                     Log.Error("Source directory, destination directory, file name or compression type is null or empty.");
-                    Log.Warning("Usage: UniCab.exe <sourceDirectory> <destinationDirectory> <fileName> <compressionType>");
+                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <compressionType>");
 
                     return null;
                 }
