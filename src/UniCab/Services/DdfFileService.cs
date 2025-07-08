@@ -3,6 +3,7 @@
     public class DdfFileService(Configuration configuration) : IDdfFileService
     {
         private const int _compressionMemory = 21;
+        private const int _maxDdfFileRowInt = 4096;
 
         private readonly string? _sourceDirectory = configuration.SourceDirectory;
         private readonly string? _destinationDirectory = configuration.DestinationDirectory;
@@ -91,6 +92,9 @@
                 }
 
                 int ddfFileRowInt = ddfFileContent.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length;
+
+                ddfFileRowInt = _maxDdfFileRowInt - ddfFileRowInt;
+
                 List<DdfFileRow> ddfFileRowList = GetDdfFileRowList(_sourceDirectory);
 
                 foreach (DdfFileRow ddfFileRow in ddfFileRowList.Take(ddfFileRowInt))
