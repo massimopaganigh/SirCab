@@ -1,4 +1,4 @@
-﻿namespace SirCab.Extensions
+﻿namespace UniCab.Extensions
 {
     public static class StringExtension
     {

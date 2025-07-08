@@ -1,4 +1,4 @@
-﻿namespace SirCab.Models
+﻿namespace UniCab.Models
 {
     public class Configuration
     {

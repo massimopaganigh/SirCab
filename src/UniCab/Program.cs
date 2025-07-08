@@ -1,4 +1,4 @@
-﻿namespace SirCab
+﻿namespace UniCab
 {
     internal class Program
     {
@@ -10,16 +10,18 @@
         {
             try
             {
-                Console.WriteLine(@"
-   ▄████████  ▄█     ▄████████  ▄████████    ▄████████ ▀█████████▄
-  ███    ███ ███    ███    ███ ███    ███   ███    ███   ███    ███
-  ███    █▀  ███▌   ███    ███ ███    █▀    ███    ███   ███    ███
-  ███        ███▌  ▄███▄▄▄▄██▀ ███          ███    ███  ▄███▄▄▄██▀
-▀███████████ ███▌ ▀▀███▀▀▀▀▀   ███        ▀███████████ ▀▀███▀▀▀██▄
-         ███ ███  ▀███████████ ███    █▄    ███    ███   ███    ██▄
-   ▄█    ███ ███    ███    ███ ███    ███   ███    ███   ███    ███
- ▄████████▀  █▀     ███    ███ ████████▀    ███    █▀  ▄█████████▀
-                    ███    ███ by SirHurt CSR Team
+                Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+                OperatingSystem oSVersion = Environment.OSVersion;
+
+                Console.WriteLine($@"
+███    █▄  ███▄▄▄▄    ▄█   ▄████████    ▄████████ ▀█████████▄
+███    ███ ███▀▀▀██▄ ███  ███    ███   ███    ███   ███    ███
+███    ███ ███   ███ ███▌ ███    █▀    ███    ███   ███    ███
+███    ███ ███   ███ ███▌ ███          ███    ███  ▄███▄▄▄██▀
+███    ███ ███   ███ ███▌ ███        ▀███████████ ▀▀███▀▀▀██▄
+███    ███ ███   ███ ███  ███    █▄    ███    ███   ███    ██▄
+███    ███ ███   ███ ███  ███    ███   ███    ███   ███    ███
+████████▀   ▀█   █▀  █▀   ████████▀    ███    █▀  ▄█████████▀  {version} - {oSVersion}
 ");
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();

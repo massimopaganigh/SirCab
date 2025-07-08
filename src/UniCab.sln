@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36109.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SirCab", "SirCab\SirCab.csproj", "{F17B3E30-8F30-4CBE-80C9-68561364E37A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniCab", "UniCab\UniCab.csproj", "{982A1B58-4C9F-2BF7-8F63-F19C21618521}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F17B3E30-8F30-4CBE-80C9-68561364E37A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F17B3E30-8F30-4CBE-80C9-68561364E37A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F17B3E30-8F30-4CBE-80C9-68561364E37A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F17B3E30-8F30-4CBE-80C9-68561364E37A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{982A1B58-4C9F-2BF7-8F63-F19C21618521}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{982A1B58-4C9F-2BF7-8F63-F19C21618521}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{982A1B58-4C9F-2BF7-8F63-F19C21618521}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{982A1B58-4C9F-2BF7-8F63-F19C21618521}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F61E7F79-5EDE-4A44-A667-D5A61C5014BE}
+		SolutionGuid = {855008AD-53CA-428A-AE86-CBA732856873}
 	EndGlobalSection
 EndGlobal
