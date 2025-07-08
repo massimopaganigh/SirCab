@@ -1,10 +1,10 @@
-﻿global using UniCab.Enums;
+﻿global using Serilog;
+global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Reflection;
+global using System.Text;
+global using UniCab.Enums;
 global using UniCab.Extensions;
 global using UniCab.Interfaces;
 global using UniCab.Models;
 global using UniCab.Services;
-global using Serilog;
-global using System.Text;
-global using System.Diagnostics.CodeAnalysis;
-global using System.Diagnostics;
-global using System.Reflection;
