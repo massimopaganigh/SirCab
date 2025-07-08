@@ -3,7 +3,6 @@
     public class DdfFileService(Configuration configuration) : IDdfFileService
     {
         private const int _compressionMemory = 21;
-        //private const int _maxDdfFileRowInt = 2048;
 
         private readonly string? _sourceDirectory = configuration.SourceDirectory;
         private readonly string? _destinationDirectory = configuration.DestinationDirectory;
@@ -73,27 +72,25 @@
 .Set CabinetNameTemplate={$"{_fileName}.cab".WithQuotes()}
 .Set DiskDirectory1={_destinationDirectory.WithQuotes()}
 .Set MaxDiskSize=0
-.Set Cabinet=on
-.Set Compress=on
-.Set CompressionType={_compressionType}");
+.Set Cabinet=on");
 
                 switch (_compressionType)
                 {
                     case CompressionType.None:
+                        ddfFileContent.AppendLine(".Set Compress=off");
                         break;
                     case CompressionType.MSZIP:
-                        ddfFileContent.AppendLine(".Set CompressionType=MSZIP");
+                        ddfFileContent.AppendLine(@".Set Compress=on
+.Set CompressionType=MSZIP");
                         break;
                     case CompressionType.LZX:
-                        ddfFileContent.AppendLine($@".Set CompressionType=LZX
+                        ddfFileContent.AppendLine($@".Set Compress=on
+.Set CompressionType=LZX
 .Set CompressionMemory={_compressionMemory}");
                         break;
                 }
 
                 int ddfFileRowInt = ddfFileContent.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length;
-
-                //ddfFileRowInt = _maxDdfFileRowInt - ddfFileRowInt;
-
                 List<DdfFileRow> ddfFileRowList = GetDdfFileRowList(_sourceDirectory);
 
                 foreach (DdfFileRow ddfFileRow in ddfFileRowList.Take(ddfFileRowInt))

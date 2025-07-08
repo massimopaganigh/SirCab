@@ -11,7 +11,7 @@
             Log.Error($"(makecab.exe) {errorData}");
 
             if (string.IsNullOrEmpty(errorData))
-                return; // If the error data is empty, we do not exit with an error code.
+                return;
 
             Environment.ExitCode = 1;
         }
