@@ -2,13 +2,13 @@
 {
     public class DdfFileService(Configuration configuration) : IDdfFileService
     {
-        private const string _compressionType = "LZX";
         private const int _compressionMemory = 21;
-        private const int _maxDdfFileRowInt = 2048;
+        //private const int _maxDdfFileRowInt = 2048;
 
         private readonly string? _sourceDirectory = configuration.SourceDirectory;
         private readonly string? _destinationDirectory = configuration.DestinationDirectory;
         private readonly string? _fileName = configuration.FileName;
+        private readonly CompressionType? _compressionType = configuration.CompressionType;
 
         private static List<DdfFileRow> GetDdfFileRowList(string directory) => GetDdfFileRowList(directory, directory);
 
@@ -43,9 +43,11 @@
             {
                 if (string.IsNullOrEmpty(_sourceDirectory)
                     || string.IsNullOrEmpty(_destinationDirectory)
-                    || string.IsNullOrEmpty(_fileName))
+                    || string.IsNullOrEmpty(_fileName)
+                    || _compressionType == null)
                 {
-                    Log.Error("Source, destination, or file name is null or empty.");
+                    Log.Error("Source directory, destination directory, file name or compression type is null or empty.");
+                    Log.Warning("Usage: UniCab.exe <sourceDirectory> <destinationDirectory> <fileName> <compressionType>");
 
                     return null;
                 }
@@ -73,12 +75,24 @@
 .Set MaxDiskSize=0
 .Set Cabinet=on
 .Set Compress=on
-.Set CompressionType={_compressionType}
+.Set CompressionType={_compressionType}");
+
+                switch (_compressionType)
+                {
+                    case CompressionType.None:
+                        break;
+                    case CompressionType.MSZIP:
+                        ddfFileContent.AppendLine(".Set CompressionType=MSZIP");
+                        break;
+                    case CompressionType.LZX:
+                        ddfFileContent.AppendLine($@".Set CompressionType=LZX
 .Set CompressionMemory={_compressionMemory}");
+                        break;
+                }
 
                 int ddfFileRowInt = ddfFileContent.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Length;
 
-                ddfFileRowInt = _maxDdfFileRowInt - ddfFileRowInt;
+                //ddfFileRowInt = _maxDdfFileRowInt - ddfFileRowInt;
 
                 List<DdfFileRow> ddfFileRowList = GetDdfFileRowList(_sourceDirectory);
 

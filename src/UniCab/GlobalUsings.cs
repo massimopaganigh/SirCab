@@ -1,4 +1,5 @@
-﻿global using UniCab.Extensions;
+﻿global using UniCab.Enums;
+global using UniCab.Extensions;
 global using UniCab.Interfaces;
 global using UniCab.Models;
 global using UniCab.Services;
