@@ -26,20 +26,20 @@ for /r "..\src" %%p in (.cr .vs bin obj) do (
     )
 )
 
-echo Restoring SirCab.sln...
+echo Restoring SirCab.slnx...
 
-dotnet restore ..\src\SirCab.sln
+dotnet restore ..\src\SirCab.slnx
 
 if %ERRORLEVEL% neq 0 (
-    echo Restore of SirCab.sln failed.
+    echo Restore of SirCab.slnx failed.
     exit /b %ERRORLEVEL%
 )
 
 echo Checking for outdated packages...
 
-dotnet list ..\src\SirCab.sln package --outdated
+dotnet list ..\src\SirCab.slnx package --outdated
 
-powershell -command "$output = dotnet list ..\src\SirCab.sln package --outdated --format json 2>$null | ConvertFrom-Json -ErrorAction SilentlyContinue; if ($output.projects.frameworks.topLevelPackages.Count -gt 0) { Write-Host 'Outdated packages found.' -ForegroundColor Red; exit 1 } else { Write-Host 'No outdated packages found.' -ForegroundColor Green }"
+powershell -command "$output = dotnet list ..\src\SirCab.slnx package --outdated --format json 2>$null | ConvertFrom-Json -ErrorAction SilentlyContinue; if ($output.projects.frameworks.topLevelPackages.Count -gt 0) { Write-Host 'Outdated packages found.' -ForegroundColor Red; exit 1 } else { Write-Host 'No outdated packages found.' -ForegroundColor Green }"
 
 if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
