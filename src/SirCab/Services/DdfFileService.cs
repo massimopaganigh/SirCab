@@ -1,11 +1,11 @@
 ﻿namespace SirCab.Services
 {
-    public class DdfFileService(Configuration configuration) : IDdfFileService
+    public class DdfFileService(Configuration configuration, ISubstService substService) : IDdfFileService
     {
         private const int _compressionMemory = 21;
         private const int _maxDdfFileRowInt = 4096;
 
-        private readonly string? _sourceDirectory = configuration.SourceDirectory;
+        private /*readonly*/ string? _sourceDirectory = configuration.SourceDirectory;
         private readonly string? _destinationDirectory = configuration.DestinationDirectory;
         private readonly string? _fileName = configuration.FileName;
         private readonly CompressionType? _compressionType = configuration.CompressionType;
@@ -64,6 +64,16 @@
                     Directory.CreateDirectory(_destinationDirectory);
 
                     Log.Information("{0} created.", _destinationDirectory);
+                }
+
+                _sourceDirectory = substService.Create(_sourceDirectory);
+
+                if (string.IsNullOrEmpty(_sourceDirectory)
+                    || !Directory.Exists(_sourceDirectory))
+                {
+                    Log.Error("Source directory is null, empty or does not exist after subst.");
+
+                    return null;
                 }
 
                 StringBuilder ddfFileContent = new();
