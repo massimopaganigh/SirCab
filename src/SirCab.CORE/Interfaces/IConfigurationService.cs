@@ -1,4 +1,6 @@
-﻿namespace SirCab.Interfaces
+﻿using SirCab.CORE.Models;
+
+namespace SirCab.CORE.Interfaces
 {
     /// <summary>
     /// Provides services for configuration management and parsing.

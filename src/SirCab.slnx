@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="SirCab/SirCab.csproj" />
+  <Project Path="SirCab.CLI/SirCab.CLI.csproj" />
+  <Project Path="SirCab.CORE/SirCab.CORE.csproj" Id="0a291de0-784e-4aee-9234-2a6d6c0e4578" />
 </Solution>

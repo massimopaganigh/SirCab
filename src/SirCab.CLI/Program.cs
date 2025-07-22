@@ -1,4 +1,4 @@
-﻿namespace SirCab
+﻿namespace SirCab.CLI
 {
     internal class Program
     {

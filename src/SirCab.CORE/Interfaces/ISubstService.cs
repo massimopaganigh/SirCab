@@ -1,4 +1,4 @@
-﻿namespace SirCab.Interfaces
+﻿namespace SirCab.CORE.Interfaces
 {
     public interface ISubstService
     {

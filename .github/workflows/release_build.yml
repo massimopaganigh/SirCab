@@ -46,6 +46,12 @@ jobs:
     #   with:
     #     sarif_file: ${{ steps.msdo.outputs.sarifFile }}
 
+    - name: Upload artifact SirCab.CORE
+      uses: actions/upload-artifact@v4
+      with:
+        name: SirCab.CORE
+        path: out/SirCab.CORE
+
     - name: Upload artifact SirCab
       uses: actions/upload-artifact@v4
       with:
