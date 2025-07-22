@@ -38,7 +38,8 @@
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
                 Configuration configuration = configurationService.FromArgs(args);
-                IDdfFileService ddfFileService = new DdfFileService(configuration);
+                ISubstService substService = new SubstService();
+                IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
                 string? ddfFilePath = ddfFileService.Create();
 
                 if (ddfFilePath == null)
@@ -80,6 +81,7 @@
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 process.WaitForExit();
+                substService.Delete(configuration.SourceDirectory!);
             }
             catch (Exception ex)
             {

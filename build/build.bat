@@ -26,20 +26,20 @@ for /r "..\src" %%p in (.cr .vs bin obj) do (
     )
 )
 
-echo Restoring UniCab.sln...
+echo Restoring UniCab.slnx...
 
-dotnet restore ..\src\UniCab.sln
+dotnet restore ..\src\UniCab.slnx
 
 if %ERRORLEVEL% neq 0 (
-    echo Restore of UniCab.sln failed.
+    echo Restore of UniCab.slnx failed.
     exit /b %ERRORLEVEL%
 )
 
 echo Checking for outdated packages...
 
-dotnet list ..\src\UniCab.sln package --outdated
+dotnet list ..\src\UniCab.slnx package --outdated
 
-powershell -command "$output = dotnet list ..\src\UniCab.sln package --outdated --format json 2>$null | ConvertFrom-Json -ErrorAction SilentlyContinue; if ($output.projects.frameworks.topLevelPackages.Count -gt 0) { Write-Host 'Outdated packages found.' -ForegroundColor Red; exit 1 } else { Write-Host 'No outdated packages found.' -ForegroundColor Green }"
+powershell -command "$output = dotnet list ..\src\UniCab.slnx package --outdated --format json 2>$null | ConvertFrom-Json -ErrorAction SilentlyContinue; if ($output.projects.frameworks.topLevelPackages.Count -gt 0) { Write-Host 'Outdated packages found.' -ForegroundColor Red; exit 1 } else { Write-Host 'No outdated packages found.' -ForegroundColor Green }"
 
 if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
