@@ -10,7 +10,7 @@ on:
 
 jobs:
   format-check:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
@@ -22,4 +22,5 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Format check
-        run: dotnet format --verify-no-changes
+        run: cd src && dotnet format --verify-no-changes
+        shell: cmd
