@@ -46,6 +46,15 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
+echo Testing SirCab.CORE...
+
+dotnet test ..\src\SirCab.CORE.Test\SirCab.CORE.Test.csproj
+
+if %ERRORLEVEL% neq 0 (
+    echo Test of SirCab.CORE failed.
+    exit /b %ERRORLEVEL%
+)
+
 echo Building SirCab.CORE...
 
 dotnet publish ..\src\SirCab.CORE\SirCab.CORE.csproj -p:PublishDir="..\%sircab_core_publish_dir%" -p:Version=%version% -c Release
