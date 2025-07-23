@@ -1,4 +1,4 @@
-﻿namespace UniCab.Models
+﻿namespace UniCab.CORE.Models
 {
     public class Configuration
     {

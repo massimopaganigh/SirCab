@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="UniCab/UniCab.csproj" />
+  <Project Path="UniCab.CLI/UniCab.CLI.csproj" />
+  <Project Path="UniCab.CORE/UniCab.CORE.csproj" Id="2e7ca748-cbbc-4569-88ff-0dd067f8db96" />
 </Solution>

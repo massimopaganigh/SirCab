@@ -1,4 +1,4 @@
-﻿namespace UniCab.Extensions
+﻿namespace UniCab.CORE.Extensions
 {
     public static class StringExtension
     {
@@ -7,7 +7,7 @@
             string? output = input;
 
             if (input != null
-                && input.EndsWith(":\\") )
+                && input.EndsWith(":\\"))
                 output = input.TrimEnd(':', '\\');
 
             return output;

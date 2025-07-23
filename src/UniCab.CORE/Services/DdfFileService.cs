@@ -1,4 +1,4 @@
-﻿namespace UniCab.Services
+﻿namespace UniCab.CORE.Services
 {
     public class DdfFileService(Configuration configuration, ISubstService substService) : IDdfFileService
     {

@@ -1,4 +1,4 @@
-﻿namespace UniCab
+﻿namespace UniCab.CLI
 {
     internal class Program
     {

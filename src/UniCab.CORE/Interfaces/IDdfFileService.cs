@@ -1,4 +1,4 @@
-﻿namespace UniCab.Interfaces
+﻿namespace UniCab.CORE.Interfaces
 {
     public interface IDdfFileService
     {

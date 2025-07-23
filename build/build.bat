@@ -5,12 +5,13 @@ setlocal enabledelayedexpansion
 set /p version=<..\VERSION
 set "release_dir=..\out\release"
 set "upx_path=..\src\ext\upx-5.0.1-win64\upx.exe"
+set "unicab_core_publish_dir=..\out\UniCab.CORE"
 set "unicab_publish_dir=..\out\UniCab"
 set "unicab_fat_publish_dir=..\out\UniCab_fat"
 
 echo Cleaning directories...
 
-for %%d in ("%release_dir%" "%unicab_publish_dir%" "%unicab_fat_publish_dir%") do (
+for %%d in ("%release_dir%" "%unicab_core_publish_dir%" "%unicab_publish_dir%" "%unicab_fat_publish_dir%") do (
     if exist "%%d" (
         echo Cleaning %%d...
         rmdir /s /q "%%d"
@@ -45,9 +46,20 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
+echo Building UniCab.CORE...
+
+dotnet publish ..\src\UniCab.CORE\UniCab.CORE.csproj -p:PublishDir="..\%unicab_core_publish_dir%" -p:Version=%version% -c Release
+
+if %ERRORLEVEL% neq 0 (
+    echo Build of UniCab.CORE failed.
+    exit /b %ERRORLEVEL%
+)
+
+del /f /q "%unicab_core_publish_dir%\*.pdb"
+
 echo Building UniCab...
 
-dotnet publish ..\src\UniCab\UniCab.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%unicab_publish_dir%" -p:Version=%version% -c Release
+dotnet publish ..\src\UniCab.CLI\UniCab.CLI.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%unicab_publish_dir%" -p:Version=%version% -c Release
 
 if %ERRORLEVEL% neq 0 (
     echo Build of UniCab failed.
@@ -96,6 +108,15 @@ if %ERRORLEVEL% neq 0 (
 
 del /f /q "%unicab_publish_dir%\_UniCab.exe"
 
+echo Archiving UniCab.CORE...
+
+powershell Compress-Archive -Path "%unicab_core_publish_dir%\*" -DestinationPath "%unicab_core_publish_dir%.zip" -Force
+
+if %ERRORLEVEL% neq 0 (
+    echo Archiving of UniCab.CORE failed.
+    exit /b %ERRORLEVEL%
+)
+
 echo Archiving UniCab...
 
 powershell Compress-Archive -Path "%unicab_publish_dir%\*" -DestinationPath "%unicab_publish_dir%.zip" -Force
@@ -107,6 +128,7 @@ if %ERRORLEVEL% neq 0 (
 
 mkdir "%release_dir%"
 
+move /y "%unicab_core_publish_dir%.zip" "%release_dir%\UniCab.CORE.zip"
 move /y "%unicab_publish_dir%.zip" "%release_dir%\UniCab.zip"
 move /y "%unicab_fat_publish_dir%.zip" "%release_dir%\UniCab_fat.zip"
 

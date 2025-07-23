@@ -1,4 +1,4 @@
-﻿namespace UniCab.Enums
+﻿namespace UniCab.CORE.Enums
 {
     public enum CompressionType
     {
