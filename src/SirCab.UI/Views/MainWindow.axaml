@@ -81,7 +81,7 @@
                 Text="Log" />
             <ScrollViewer
                 Grid.Row="1"
-                HorizontalScrollBarVisibility="Disabled"
+                HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Auto">
                 <TextBox IsReadOnly="True" Text="{Binding LogOut}" />
             </ScrollViewer>

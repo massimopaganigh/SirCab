@@ -81,7 +81,8 @@
         {
             try
             {
-                Log.Logger = new LoggerConfiguration().CreateLogger();
+                LogOut = null;
+                Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UISink(this)).CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
                 Configuration configuration = new()
                 {
