@@ -5,12 +5,13 @@ setlocal enabledelayedexpansion
 set /p version=<..\VERSION
 set "release_dir=..\out\release"
 set "upx_path=..\src\ext\upx-5.0.1-win64\upx.exe"
+set "sircab_core_publish_dir=..\out\SirCab.CORE"
 set "sircab_publish_dir=..\out\SirCab"
 set "sircab_fat_publish_dir=..\out\SirCab_fat"
 
 echo Cleaning directories...
 
-for %%d in ("%release_dir%" "%sircab_publish_dir%" "%sircab_fat_publish_dir%") do (
+for %%d in ("%release_dir%" "%sircab_core_publish_dir%" "%sircab_publish_dir%" "%sircab_fat_publish_dir%") do (
     if exist "%%d" (
         echo Cleaning %%d...
         rmdir /s /q "%%d"
@@ -45,9 +46,29 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
+echo Testing SirCab.CORE...
+
+dotnet test ..\src\SirCab.CORE.Test\SirCab.CORE.Test.csproj
+
+if %ERRORLEVEL% neq 0 (
+    echo Test of SirCab.CORE failed.
+    exit /b %ERRORLEVEL%
+)
+
+echo Building SirCab.CORE...
+
+dotnet publish ..\src\SirCab.CORE\SirCab.CORE.csproj -p:PublishDir="..\%sircab_core_publish_dir%" -p:Version=%version% -c Release
+
+if %ERRORLEVEL% neq 0 (
+    echo Build of SirCab.CORE failed.
+    exit /b %ERRORLEVEL%
+)
+
+del /f /q "%sircab_core_publish_dir%\*.pdb"
+
 echo Building SirCab...
 
-dotnet publish ..\src\SirCab\SirCab.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_publish_dir%" -p:Version=%version% -c Release
+dotnet publish ..\src\SirCab.CLI\SirCab.CLI.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_publish_dir%" -p:Version=%version% -c Release
 
 if %ERRORLEVEL% neq 0 (
     echo Build of SirCab failed.
@@ -96,6 +117,15 @@ if %ERRORLEVEL% neq 0 (
 
 del /f /q "%sircab_publish_dir%\_SirCab.exe"
 
+echo Archiving SirCab.CORE...
+
+powershell Compress-Archive -Path "%sircab_core_publish_dir%\*" -DestinationPath "%sircab_core_publish_dir%.zip" -Force
+
+if %ERRORLEVEL% neq 0 (
+    echo Archiving of SirCab.CORE failed.
+    exit /b %ERRORLEVEL%
+)
+
 echo Archiving SirCab...
 
 powershell Compress-Archive -Path "%sircab_publish_dir%\*" -DestinationPath "%sircab_publish_dir%.zip" -Force
@@ -107,6 +137,7 @@ if %ERRORLEVEL% neq 0 (
 
 mkdir "%release_dir%"
 
+move /y "%sircab_core_publish_dir%.zip" "%release_dir%\SirCab.CORE.zip"
 move /y "%sircab_publish_dir%.zip" "%release_dir%\SirCab.zip"
 move /y "%sircab_fat_publish_dir%.zip" "%release_dir%\SirCab_fat.zip"
 

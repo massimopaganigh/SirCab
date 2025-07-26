@@ -1,4 +1,4 @@
-﻿namespace SirCab.Services
+﻿namespace SirCab.CORE.Services
 {
     public class ConfigurationService : IConfigurationService
     {

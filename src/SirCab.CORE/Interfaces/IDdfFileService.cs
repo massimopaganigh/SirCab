@@ -1,4 +1,4 @@
-﻿namespace SirCab.Interfaces
+﻿namespace SirCab.CORE.Interfaces
 {
     /// <summary>
     /// Provides services for DDF (Data Definition File) operations.

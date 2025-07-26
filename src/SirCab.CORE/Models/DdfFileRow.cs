@@ -1,4 +1,4 @@
-﻿namespace SirCab.Models
+﻿namespace SirCab.CORE.Models
 {
     public class DdfFileRow
     {
