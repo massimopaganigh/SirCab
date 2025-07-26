@@ -34,6 +34,20 @@
                     return;
                 }
 
+                Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+                Version? fixedCurrentVersion = Version.Parse(currentVersion);
+
+                if (version == null
+                    || fixedCurrentVersion == null)
+                {
+                    Log.Warning("Version or fixed current version is null or empty.");
+
+                    return;
+                }
+
+                if (version >= fixedCurrentVersion)
+                    return;
+
                 string manifestUrl = $"https://raw.githubusercontent.com/microsoft/winget-pkgs/refs/heads/master/manifests/s/SirCab/SirCab/{currentVersion}/SirCab.SirCab.yaml";
                 using HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync(manifestUrl);
 

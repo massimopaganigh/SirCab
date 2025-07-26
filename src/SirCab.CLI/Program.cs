@@ -16,7 +16,7 @@
             Environment.ExitCode = 1;
         }
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {
@@ -95,7 +95,7 @@
             {
                 IUpdateService updateService = new UpdateService();
 
-                updateService.CheckForUpdateAsync();
+                await updateService.CheckForUpdateAsync();
 
                 Log.CloseAndFlush();
             }
