@@ -93,6 +93,10 @@
             }
             finally
             {
+                IUpdateService updateService = new UpdateService();
+
+                updateService.CheckForUpdateAsync();
+
                 Log.CloseAndFlush();
             }
         }
