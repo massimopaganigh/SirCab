@@ -83,7 +83,7 @@
                 Grid.Row="1"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
-                <TextBox IsReadOnly="True" Text="{Binding Log}" />
+                <TextBox IsReadOnly="True" Text="{Binding LogOut}" />
             </ScrollViewer>
         </Grid>
         <Grid Grid.Row="2">
@@ -91,6 +91,7 @@
             <Button
                 Grid.Row="1"
                 HorizontalAlignment="Right"
+                Command="{Binding RunCommand}"
                 Content="Run" />
         </Grid>
     </Grid>

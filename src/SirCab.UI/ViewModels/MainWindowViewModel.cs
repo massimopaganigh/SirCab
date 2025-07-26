@@ -20,7 +20,7 @@
         private string? _fileName;
 
         [ObservableProperty]
-        private string? _log;
+        private string? _logOut;
 
         [ObservableProperty]
         private string? _sourceDirectory;
@@ -70,6 +70,80 @@
                 return TopLevel.GetTopLevel(mainWindow);
 
             return null;
+        }
+
+        private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e) => Log.Error($"(makecab.exe) {e.Data ?? string.Empty}");
+
+        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
+
+        [RelayCommand]
+        private async Task RunAsync()
+        {
+            try
+            {
+                Log.Logger = new LoggerConfiguration().CreateLogger();
+                IConfigurationService configurationService = new ConfigurationService();
+                Configuration configuration = new()
+                {
+                    SourceDirectory = SourceDirectory,
+                    DestinationDirectory = DestinationDirectory,
+                    FileName = FileName,
+                    CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
+                };
+                ISubstService substService = new SubstService();
+                IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
+                string? ddfFilePath = ddfFileService.Create();
+
+                if (ddfFilePath == null)
+                {
+                    Log.Error("Ddf file path is null or empty.");
+
+                    return;
+                }
+
+                if (!File.Exists(ddfFilePath))
+                {
+                    Log.Error("Ddf file does not exist.");
+
+                    return;
+                }
+
+                ProcessStartInfo startInfo = new()
+                {
+                    CreateNoWindow = true,
+                    FileName = "makecab.exe",
+                    Arguments = $"/f {ddfFilePath.WithQuotes()}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                };
+                using Process process = new()
+                {
+                    StartInfo = startInfo
+                };
+
+                process.ErrorDataReceived += Process_ErrorDataReceived;
+                process.OutputDataReceived += Process_OutputDataReceived;
+
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                process.WaitForExit();
+                substService.Delete(configuration.SourceDirectory!);
+                substService.Delete(configuration.DestinationDirectory!);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, nameof(RunAsync));
+            }
+            finally
+            {
+                IUpdateService updateService = new UpdateService();
+
+                await updateService.CheckForUpdateAsync();
+
+                Log.CloseAndFlush();
+            }
         }
     }
 }
