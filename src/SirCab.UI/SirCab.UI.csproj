@@ -8,6 +8,7 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <AssemblyName>SirCab</AssemblyName>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <PublishAot>True</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
