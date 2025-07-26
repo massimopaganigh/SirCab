@@ -1,4 +1,4 @@
-﻿namespace SirCab
+﻿namespace SirCab.CLI
 {
     internal class Program
     {
@@ -16,7 +16,7 @@
             Environment.ExitCode = 1;
         }
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {
@@ -83,6 +83,7 @@
                 process.BeginErrorReadLine();
                 process.WaitForExit();
                 substService.Delete(configuration.SourceDirectory!);
+                substService.Delete(configuration.DestinationDirectory!);
             }
             catch (Exception ex)
             {
@@ -92,6 +93,10 @@
             }
             finally
             {
+                IUpdateService updateService = new UpdateService();
+
+                await updateService.CheckForUpdateAsync();
+
                 Log.CloseAndFlush();
             }
         }

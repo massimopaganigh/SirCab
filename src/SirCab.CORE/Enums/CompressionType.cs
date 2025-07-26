@@ -1,4 +1,4 @@
-﻿namespace SirCab.Enums
+﻿namespace SirCab.CORE.Enums
 {
     public enum CompressionType
     {

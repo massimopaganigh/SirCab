@@ -1,4 +1,4 @@
-﻿namespace SirCab.Services
+﻿namespace SirCab.CORE.Services
 {
     public class DdfFileService(Configuration configuration, ISubstService substService) : IDdfFileService
     {
@@ -6,7 +6,7 @@
         private const int _maxDdfFileRowInt = 4096;
 
         private /*readonly*/ string? _sourceDirectory = configuration.SourceDirectory;
-        private readonly string? _destinationDirectory = configuration.DestinationDirectory;
+        private /*readonly*/ string? _destinationDirectory = configuration.DestinationDirectory;
         private readonly string? _fileName = configuration.FileName;
         private readonly CompressionType? _compressionType = configuration.CompressionType;
 
@@ -67,15 +67,20 @@
                 }
 
                 _sourceDirectory = substService.Create(_sourceDirectory);
+                _destinationDirectory = substService.Create(_destinationDirectory);
 
                 if (string.IsNullOrEmpty(_sourceDirectory)
-                    || !Directory.Exists(_sourceDirectory))
+                    || string.IsNullOrEmpty(_destinationDirectory)
+                    || !Directory.Exists(_sourceDirectory)
+                    || !Directory.Exists(_destinationDirectory))
                 {
-                    Log.Error("Source directory is null, empty or does not exist after subst.");
+                    Log.Error("Source directory or destination directory is null, empty or does not exist after subst.");
 
                     return null;
                 }
 
+                configuration.SourceDirectory = _sourceDirectory;
+                configuration.DestinationDirectory = _destinationDirectory;
                 StringBuilder ddfFileContent = new();
 
                 ddfFileContent.AppendLine($@";*** MakeCAB Directive file;
