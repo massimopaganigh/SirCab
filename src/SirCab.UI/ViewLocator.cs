@@ -7,15 +7,13 @@ namespace SirCab.UI
             if (param is null)
                 return null;
 
-            var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-            var type = Type.GetType(name);
-
-            if (type != null)
-                return (Control)Activator.CreateInstance(type)!;
-
-            return new TextBlock
+            return param switch
             {
-                Text = "Not Found: " + name
+                MainWindowViewModel => new MainWindow(),
+                _ => new TextBlock
+                {
+                    Text = "Not Found: " + param.GetType().Name
+                }
             };
         }
 
