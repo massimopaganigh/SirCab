@@ -20,13 +20,19 @@
         private string? _fileName;
 
         [ObservableProperty]
+        private string? _footer = $"{File.GetCreationTime(AppContext.BaseDirectory)} - {Environment.OSVersion}";
+
+        [ObservableProperty]
+        private bool _isNotRunning = true;
+
+        [ObservableProperty]
         private string? _logOut;
 
         [ObservableProperty]
         private string? _sourceDirectory;
 
         [ObservableProperty]
-        private string? _version = $"{Assembly.GetExecutingAssembly().GetName().Version?.ToString()} - {AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName}";
+        private string _title = $"SirCab ({Assembly.GetExecutingAssembly().GetName().Version?.ToString()} - {AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName})";
 
         [RelayCommand]
         private async Task BrowseDestinationDirectoryAsync()
@@ -79,72 +85,78 @@
         [RelayCommand]
         private async Task RunAsync()
         {
-            try
+            await Task.Run(async () =>
             {
-                LogOut = null;
-                Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).CreateLogger();
-                IConfigurationService configurationService = new ConfigurationService();
-                Configuration configuration = new()
+                try
                 {
-                    SourceDirectory = SourceDirectory,
-                    DestinationDirectory = DestinationDirectory,
-                    FileName = FileName,
-                    CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
-                };
-                ISubstService substService = new SubstService();
-                IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
-                string? ddfFilePath = ddfFileService.Create();
+                    IsNotRunning = false;
+                    LogOut = null;
+                    Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).CreateLogger();
+                    IConfigurationService configurationService = new ConfigurationService();
+                    Configuration configuration = new()
+                    {
+                        SourceDirectory = SourceDirectory,
+                        DestinationDirectory = DestinationDirectory,
+                        FileName = FileName,
+                        CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
+                    };
+                    ISubstService substService = new SubstService();
+                    IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
+                    string? ddfFilePath = ddfFileService.Create();
 
-                if (ddfFilePath == null)
-                {
-                    Log.Error("Ddf file path is null or empty.");
+                    if (ddfFilePath == null)
+                    {
+                        Log.Error("Ddf file path is null or empty.");
 
-                    return;
+                        return;
+                    }
+
+                    if (!File.Exists(ddfFilePath))
+                    {
+                        Log.Error("Ddf file does not exist.");
+
+                        return;
+                    }
+
+                    ProcessStartInfo startInfo = new()
+                    {
+                        CreateNoWindow = true,
+                        FileName = "makecab.exe",
+                        Arguments = $"/f {ddfFilePath.WithQuotes()}",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false
+                    };
+                    using Process process = new()
+                    {
+                        StartInfo = startInfo
+                    };
+
+                    process.ErrorDataReceived += Process_ErrorDataReceived;
+                    process.OutputDataReceived += Process_OutputDataReceived;
+
+                    process.Start();
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                    process.WaitForExit();
+                    substService.Delete(configuration.SourceDirectory!);
+                    substService.Delete(configuration.DestinationDirectory!);
                 }
-
-                if (!File.Exists(ddfFilePath))
+                catch (Exception ex)
                 {
-                    Log.Error("Ddf file does not exist.");
-
-                    return;
+                    Log.Error(ex, nameof(RunAsync));
                 }
-
-                ProcessStartInfo startInfo = new()
+                finally
                 {
-                    CreateNoWindow = true,
-                    FileName = "makecab.exe",
-                    Arguments = $"/f {ddfFilePath.WithQuotes()}",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false
-                };
-                using Process process = new()
-                {
-                    StartInfo = startInfo
-                };
+                    IUpdateService updateService = new UpdateService();
 
-                process.ErrorDataReceived += Process_ErrorDataReceived;
-                process.OutputDataReceived += Process_OutputDataReceived;
+                    await updateService.CheckForUpdateAsync();
 
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                process.WaitForExit();
-                substService.Delete(configuration.SourceDirectory!);
-                substService.Delete(configuration.DestinationDirectory!);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, nameof(RunAsync));
-            }
-            finally
-            {
-                IUpdateService updateService = new UpdateService();
+                    Log.CloseAndFlush();
 
-                await updateService.CheckForUpdateAsync();
-
-                Log.CloseAndFlush();
-            }
+                    IsNotRunning = true;
+                }
+            });
         }
     }
 }
