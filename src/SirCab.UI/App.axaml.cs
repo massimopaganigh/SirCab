@@ -2,6 +2,7 @@ namespace SirCab.UI
 {
     public partial class App : Application
     {
+        [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break when trimming application code", Justification = "DataValidators access is necessary for proper Avalonia binding validation")]
         private void DisableAvaloniaDataAnnotationValidation()
         {
             DataAnnotationsValidationPlugin[] dataValidationPluginsToRemove = [.. BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>()];
