@@ -82,7 +82,7 @@
             try
             {
                 LogOut = null;
-                Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UISink(this)).CreateLogger();
+                Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
                 Configuration configuration = new()
                 {

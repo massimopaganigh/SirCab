@@ -1,6 +1,6 @@
 ﻿namespace SirCab.UI.Services
 {
-    public class UISink(MainWindowViewModel mainWindowViewModel) : ILogEventSink
+    public class UILogEventSink(MainWindowViewModel mainWindowViewModel) : ILogEventSink
     {
         private readonly ITextFormatter _textFormatter = new MessageTemplateTextFormatter("[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
 
@@ -10,12 +10,9 @@
 
             _textFormatter.Format(logEvent, stringWriter);
 
-            string? message = stringWriter.ToString();
+            string message = stringWriter.ToString();
 
-            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                mainWindowViewModel.LogOut = (mainWindowViewModel.LogOut ?? string.Empty) + message;
-            });
+            mainWindowViewModel.LogOut = (mainWindowViewModel.LogOut ?? string.Empty) + message;
         }
     }
 }

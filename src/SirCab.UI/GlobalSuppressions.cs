@@ -4,4 +4,4 @@
 // a specific target and scoped to a namespace, type, member, etc.
 
 [assembly: SuppressMessage("Performance", "CA1859:Usare tipi concreti quando possibile per migliorare le prestazioni", Justification = "<In sospeso>", Scope = "member", Target = "~M:SirCab.UI.ViewModels.MainWindowViewModel.RunAsync~System.Threading.Tasks.Task")]
-[assembly: SuppressMessage("Performance", "CA1859:Usare tipi concreti quando possibile per migliorare le prestazioni", Justification = "<In sospeso>", Scope = "member", Target = "~F:SirCab.UI.Services.UISink._textFormatter")]
+[assembly: SuppressMessage("Performance", "CA1859:Usare tipi concreti quando possibile per migliorare le prestazioni", Justification = "<In sospeso>", Scope = "member", Target = "~F:SirCab.UI.Services.UILogEventSink._textFormatter")]
