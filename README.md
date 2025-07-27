@@ -12,12 +12,6 @@
 
 Cabinet file creator.
 
-### CLI
-
-<image src="images/SirCab.CLI.png">
-
-### UI
-
 <image src="images/SirCab.UI.png">
 
 </div>
