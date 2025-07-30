@@ -6,12 +6,14 @@ set /p version=<..\VERSION
 set "release_dir=..\out\release"
 set "upx_path=..\src\ext\upx-5.0.1-win64\upx.exe"
 set "sircab_core_publish_dir=..\out\SirCab.CORE"
-set "sircab_publish_dir=..\out\SirCab"
-set "sircab_fat_publish_dir=..\out\SirCab_fat"
+set "sircab_cli_publish_dir=..\out\SirCab.CLI"
+set "sircab_cli_fat_publish_dir=..\out\SirCab.CLI_fat"
+set "sircab_ui_publish_dir=..\out\SirCab.UI"
+set "sircab_ui_fat_publish_dir=..\out\SirCab.UI_fat"
 
 echo Cleaning directories...
 
-for %%d in ("%release_dir%" "%sircab_core_publish_dir%" "%sircab_publish_dir%" "%sircab_fat_publish_dir%") do (
+for %%d in ("%release_dir%" "%sircab_core_publish_dir%" "%sircab_cli_publish_dir%" "%sircab_fat_publish_dir%" "%sircab_ui_publish_dir%" "%sircab_ui_fat_publish_dir%") do (
     if exist "%%d" (
         echo Cleaning %%d...
         rmdir /s /q "%%d"
@@ -66,57 +68,6 @@ if %ERRORLEVEL% neq 0 (
 
 del /f /q "%sircab_core_publish_dir%\*.pdb"
 
-echo Building SirCab...
-
-dotnet publish ..\src\SirCab.CLI\SirCab.CLI.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_publish_dir%" -p:Version=%version% -c Release
-
-if %ERRORLEVEL% neq 0 (
-    echo Build of SirCab failed.
-    exit /b %ERRORLEVEL%
-)
-
-del /f /q "%sircab_publish_dir%\*.pdb"
-
-echo Copying SirCab to SirCab_fat...
-
-mkdir "%sircab_fat_publish_dir%"
-
-xcopy /e /i /y "%sircab_publish_dir%\*" "%sircab_fat_publish_dir%"
-
-if %ERRORLEVEL% neq 0 (
-    echo Copy of SirCab to SirCab_fat failed.
-    exit /b %ERRORLEVEL%
-)
-
-echo Archiving SirCab_fat...
-
-powershell Compress-Archive -Path "%sircab_fat_publish_dir%\*" -DestinationPath "%sircab_fat_publish_dir%.zip" -Force
-
-if %ERRORLEVEL% neq 0 (
-    echo Archiving of SirCab_fat failed.
-    exit /b %ERRORLEVEL%
-)
-
-echo Compressing SirCab...
-
-ren "%sircab_publish_dir%\SirCab.exe" "_SirCab.exe"
-
-"%upx_path%" --best --ultra-brute "%sircab_publish_dir%\_SirCab.exe" -o "%sircab_publish_dir%\SirCab.exe"
-
-if %ERRORLEVEL% neq 0 (
-    echo Compression of SirCab failed.
-    exit /b %ERRORLEVEL%
-)
-
-"%upx_path%" -t "%sircab_publish_dir%\SirCab.exe"
-
-if %ERRORLEVEL% neq 0 (
-    echo Verification of SirCab compression failed.
-    exit /b %ERRORLEVEL%
-)
-
-del /f /q "%sircab_publish_dir%\_SirCab.exe"
-
 echo Archiving SirCab.CORE...
 
 powershell Compress-Archive -Path "%sircab_core_publish_dir%\*" -DestinationPath "%sircab_core_publish_dir%.zip" -Force
@@ -126,19 +77,132 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-echo Archiving SirCab...
+echo Building SirCab.CLI...
 
-powershell Compress-Archive -Path "%sircab_publish_dir%\*" -DestinationPath "%sircab_publish_dir%.zip" -Force
+dotnet publish ..\src\SirCab.CLI\SirCab.CLI.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_cli_publish_dir%" -p:Version=%version% -c Release
 
 if %ERRORLEVEL% neq 0 (
-    echo Archiving of SirCab failed.
+    echo Build of SirCab.CLI failed.
+    exit /b %ERRORLEVEL%
+)
+
+del /f /q "%sircab_cli_publish_dir%\*.pdb"
+
+echo Copying SirCab.CLI to SirCab.CLI_fat...
+
+mkdir "%sircab_cli_fat_publish_dir%"
+
+xcopy /e /i /y "%sircab_cli_publish_dir%\*" "%sircab_cli_fat_publish_dir%"
+
+if %ERRORLEVEL% neq 0 (
+    echo Copy of SirCab.CLI to SirCab.CLI_fat failed.
+    exit /b %ERRORLEVEL%
+)
+
+echo Archiving SirCab.CLI_fat...
+
+powershell Compress-Archive -Path "%sircab_cli_fat_publish_dir%\*" -DestinationPath "%sircab_cli_fat_publish_dir%.zip" -Force
+
+if %ERRORLEVEL% neq 0 (
+    echo Archiving of SirCab.CLI_fat failed.
+    exit /b %ERRORLEVEL%
+)
+
+echo Compressing SirCab.CLI...
+
+ren "%sircab_cli_publish_dir%\SirCab.exe" "_SirCab.exe"
+
+"%upx_path%" --best --ultra-brute "%sircab_cli_publish_dir%\_SirCab.exe" -o "%sircab_cli_publish_dir%\SirCab.exe"
+
+if %ERRORLEVEL% neq 0 (
+    echo Compression of SirCab.CLI failed.
+    exit /b %ERRORLEVEL%
+)
+
+"%upx_path%" -t "%sircab_cli_publish_dir%\SirCab.exe"
+
+if %ERRORLEVEL% neq 0 (
+    echo Verification of SirCab.CLI compression failed.
+    exit /b %ERRORLEVEL%
+)
+
+del /f /q "%sircab_cli_publish_dir%\_SirCab.exe"
+
+echo Archiving SirCab.CLI...
+
+powershell Compress-Archive -Path "%sircab_cli_publish_dir%\*" -DestinationPath "%sircab_cli_publish_dir%.zip" -Force
+
+if %ERRORLEVEL% neq 0 (
+    echo Archiving of SirCab.CLI failed.
+    exit /b %ERRORLEVEL%
+)
+
+echo Building SirCab.UI...
+
+dotnet publish ..\src\SirCab.UI\SirCab.UI.csproj -p:PublishProfile=FolderProfile -p:PublishDir="..\%sircab_ui_publish_dir%" -p:Version=%version% -c Release
+
+if %ERRORLEVEL% neq 0 (
+    echo Build of SirCab.UI failed.
+    exit /b %ERRORLEVEL%
+)
+
+del /f /q "%sircab_ui_publish_dir%\*.pdb"
+
+echo Copying SirCab.UI to SirCab.UI_fat...
+
+mkdir "%sircab_ui_fat_publish_dir%"
+
+xcopy /e /i /y "%sircab_ui_publish_dir%\*" "%sircab_ui_fat_publish_dir%"
+
+if %ERRORLEVEL% neq 0 (
+    echo Copy of SirCab.UI to SirCab.UI_fat failed.
+    exit /b %ERRORLEVEL%
+)
+
+echo Archiving SirCab.UI_fat...
+
+powershell Compress-Archive -Path "%sircab_ui_fat_publish_dir%\*" -DestinationPath "%sircab_ui_fat_publish_dir%.zip" -Force
+
+if %ERRORLEVEL% neq 0 (
+    echo Archiving of SirCab.UI_fat failed.
+    exit /b %ERRORLEVEL%
+)
+
+echo Compressing SirCab.UI...
+
+ren "%sircab_ui_publish_dir%\SirCab.exe" "_SirCab.exe"
+
+"%upx_path%" --best --ultra-brute "%sircab_ui_publish_dir%\_SirCab.exe" -o "%sircab_ui_publish_dir%\SirCab.exe"
+
+if %ERRORLEVEL% neq 0 (
+    echo Compression of SirCab.UI failed.
+    exit /b %ERRORLEVEL%
+)
+
+"%upx_path%" -t "%sircab_ui_publish_dir%\SirCab.exe"
+
+if %ERRORLEVEL% neq 0 (
+    echo Verification of SirCab.UI compression failed.
+    exit /b %ERRORLEVEL%
+)
+
+del /f /q "%sircab_ui_publish_dir%\_SirCab.exe"
+
+echo Archiving SirCab.UI...
+
+powershell Compress-Archive -Path "%sircab_ui_publish_dir%\*" -DestinationPath "%sircab_ui_publish_dir%.zip" -Force
+
+if %ERRORLEVEL% neq 0 (
+    echo Archiving of SirCab.UI failed.
     exit /b %ERRORLEVEL%
 )
 
 mkdir "%release_dir%"
 
 move /y "%sircab_core_publish_dir%.zip" "%release_dir%\SirCab.CORE.zip"
-move /y "%sircab_publish_dir%.zip" "%release_dir%\SirCab.zip"
-move /y "%sircab_fat_publish_dir%.zip" "%release_dir%\SirCab_fat.zip"
+move /y "%sircab_cli_publish_dir%.zip" "%release_dir%\SirCab.CLI.zip"
+move /y "%sircab_cli_fat_publish_dir%.zip" "%release_dir%\SirCab.CLI_fat.zip"
+move /y "%sircab_ui_publish_dir%.zip" "%release_dir%\SirCab.UI.zip"
+move /y "%sircab_ui_fat_publish_dir%.zip" "%release_dir%\SirCab.UI_fat.zip"
 
 endlocal

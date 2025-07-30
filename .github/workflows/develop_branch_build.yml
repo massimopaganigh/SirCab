@@ -51,14 +51,26 @@ jobs:
         name: SirCab.CORE
         path: out/SirCab.CORE
 
-    - name: Upload artifact SirCab
+    - name: Upload artifact SirCab.CLI
       uses: actions/upload-artifact@v4
       with:
-        name: SirCab
-        path: out/SirCab
+        name: SirCab.CLI
+        path: out/SirCab.CLI
 
-    - name: Upload artifact SirCab_fat
+    - name: Upload artifact SirCab.CLI_fat
       uses: actions/upload-artifact@v4
       with:
-        name: SirCab_fat
-        path: out/SirCab_fat
+        name: SirCab.CLI_fat
+        path: out/SirCab.CLI_fat
+
+    - name: Upload artifact SirCab.UI
+      uses: actions/upload-artifact@v4
+      with:
+        name: SirCab.UI
+        path: out/SirCab.UI
+
+    - name: Upload artifact SirCab.UI_fat
+      uses: actions/upload-artifact@v4
+      with:
+        name: SirCab.UI_fat
+        path: out/SirCab.UI_fat
