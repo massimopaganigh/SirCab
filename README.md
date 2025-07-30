@@ -12,6 +12,6 @@
 
 Cabinet file creator.
 
-<image src="images/SirCab.png">
+<image src="images/SirCab.UI.png">
 
 </div>

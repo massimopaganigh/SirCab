@@ -70,7 +70,7 @@
                     RedirectStandardError = true,
                     UseShellExecute = false
                 };
-                Process process = new()
+                using Process process = new()
                 {
                     StartInfo = startInfo
                 };
