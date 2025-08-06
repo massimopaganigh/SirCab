@@ -4,9 +4,17 @@
     {
         private static string? GetLastAvailableDriveLetter()
         {
+            HashSet<char> existingDrives = [.. DriveInfo.GetDrives().Select(d => d.Name[0])];
+
             for (char driveLetter = 'Z'; driveLetter >= 'A'; driveLetter--)
-                if (!Directory.Exists(driveLetter.ToString().FromStringToRoot()))
+                if (!existingDrives.Contains(driveLetter))
+                {
+                    Log.Information($"Last available drive letter: {driveLetter}.");
+
                     return driveLetter.ToString();
+                }
+
+            Log.Error("No available drive letters found.");
 
             return null;
         }
