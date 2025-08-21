@@ -66,21 +66,26 @@
                     Log.Information("{0} created.", _destinationDirectory);
                 }
 
-                _sourceDirectory = substService.Create(_sourceDirectory);
-                _destinationDirectory = substService.Create(_destinationDirectory);
+                string? tmpSourceDirectory = substService.Create(_sourceDirectory);
+                string? tmpDestinationDirectory = substService.Create(_destinationDirectory);
 
-                if (string.IsNullOrEmpty(_sourceDirectory)
-                    || string.IsNullOrEmpty(_destinationDirectory)
-                    || !Directory.Exists(_sourceDirectory)
-                    || !Directory.Exists(_destinationDirectory))
+                if (string.IsNullOrEmpty(tmpSourceDirectory)
+                    || string.IsNullOrEmpty(tmpDestinationDirectory)
+                    || !Directory.Exists(tmpSourceDirectory)
+                    || !Directory.Exists(tmpDestinationDirectory))
                 {
-                    Log.Error("Source directory or destination directory is null, empty or does not exist after subst.");
+                    configuration.SubstError = true;
 
-                    return null;
+                    Log.Error("Source directory or destination directory is null, empty or does not exist after subst. Falling back to original directories.");
+                }
+                else
+                {
+                    _sourceDirectory = tmpSourceDirectory;
+                    _destinationDirectory = tmpDestinationDirectory;
+                    configuration.SourceDirectory = _sourceDirectory;
+                    configuration.DestinationDirectory = _destinationDirectory;
                 }
 
-                configuration.SourceDirectory = _sourceDirectory;
-                configuration.DestinationDirectory = _destinationDirectory;
                 StringBuilder ddfFileContent = new();
 
                 ddfFileContent.AppendLine($@";*** MakeCAB Directive file;

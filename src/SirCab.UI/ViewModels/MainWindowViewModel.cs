@@ -139,8 +139,12 @@
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                     process.WaitForExit();
-                    substService.Delete(configuration.SourceDirectory!);
-                    substService.Delete(configuration.DestinationDirectory!);
+
+                    if (configuration.SubstError == false)
+                    {
+                        substService.Delete(configuration.SourceDirectory!);
+                        substService.Delete(configuration.DestinationDirectory!);
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -9,5 +9,7 @@
         public string? FileName { get; set; }
 
         public CompressionType? CompressionType { get; set; }
+
+        public bool? SubstError { get; set; } = false;
     }
 }
