@@ -20,6 +20,17 @@
         private string? _fileName;
 
         [ObservableProperty]
+        private string? _fileType = "Cab";
+
+        [ObservableProperty]
+        private List<string> _fileTypes =
+        [
+            "Cab",
+            "Wsp",
+            "Xsn"
+        ];
+
+        [ObservableProperty]
         private string? _footer = $"{File.GetCreationTime(AppContext.BaseDirectory)} - {Environment.OSVersion}";
 
         [ObservableProperty]
@@ -98,6 +109,7 @@
                         SourceDirectory = SourceDirectory,
                         DestinationDirectory = DestinationDirectory,
                         FileName = FileName,
+                        FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
                         CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
                     };
                     ISubstService substService = new SubstService();
@@ -139,8 +151,12 @@
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                     process.WaitForExit();
-                    substService.Delete(configuration.SourceDirectory!);
-                    substService.Delete(configuration.DestinationDirectory!);
+
+                    if (configuration.SubstError == false)
+                    {
+                        substService.Delete(configuration.SourceDirectory!);
+                        substService.Delete(configuration.DestinationDirectory!);
+                    }
                 }
                 catch (Exception ex)
                 {
