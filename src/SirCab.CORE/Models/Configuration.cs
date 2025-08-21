@@ -8,6 +8,10 @@
 
         public string? FileName { get; set; }
 
+        public FileType? FileType { get; set; }
+
         public CompressionType? CompressionType { get; set; }
+
+        public bool? SubstError { get; set; } = false;
     }
 }
