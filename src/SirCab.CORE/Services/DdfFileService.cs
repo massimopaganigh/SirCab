@@ -8,6 +8,7 @@
         private /*readonly*/ string? _sourceDirectory = configuration.SourceDirectory;
         private /*readonly*/ string? _destinationDirectory = configuration.DestinationDirectory;
         private readonly string? _fileName = configuration.FileName;
+        private readonly FileType? _fileType = configuration.FileType;
         private readonly CompressionType? _compressionType = configuration.CompressionType;
 
         private static List<DdfFileRow> GetDdfFileRowList(string directory) => GetDdfFileRowList(directory, directory);
@@ -37,6 +38,14 @@
             return ddfFileRowList;
         }
 
+        private static string GetFileExtension(FileType fileType) => fileType switch
+        {
+            FileType.Cab => "cab",
+            FileType.Wsp => "wsp",
+            FileType.Xsn => "xsn",
+            _ => "cab"
+        };
+
         public string? Create()
         {
             try
@@ -44,10 +53,11 @@
                 if (string.IsNullOrEmpty(_sourceDirectory)
                     || string.IsNullOrEmpty(_destinationDirectory)
                     || string.IsNullOrEmpty(_fileName)
-                    || _compressionType == null)
+                    || _compressionType == null
+                    || _fileType == null)
                 {
-                    Log.Error("Source directory, destination directory, file name or compression type is null or empty.");
-                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <compressionType>");
+                    Log.Error("Source directory, destination directory, file name, file type or compression type is null or empty.");
+                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType>");
 
                     return null;
                 }
@@ -88,9 +98,11 @@
 
                 StringBuilder ddfFileContent = new();
 
+                string fileExtension = GetFileExtension(_fileType.Value);
+
                 ddfFileContent.AppendLine($@";*** MakeCAB Directive file;
 .OPTION EXPLICIT
-.Set CabinetNameTemplate={$"{_fileName}.cab".WithQuotes()}
+.Set CabinetNameTemplate={$"{_fileName}.{fileExtension}".WithQuotes()}
 .Set DiskDirectory1={_destinationDirectory.WithQuotes()}
 .Set MaxDiskSize=0
 .Set Cabinet=on");

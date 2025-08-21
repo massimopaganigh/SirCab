@@ -33,7 +33,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock
                 Grid.Row="0"
@@ -63,26 +62,45 @@
                 Grid.Row="3"
                 IsEnabled="{Binding IsNotRunning}"
                 Text="{Binding DestinationDirectory}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
+            <Grid Grid.Row="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="10"
+                    Text="File name" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="20,10,10,10"
+                    Text="File type" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    IsEnabled="{Binding IsNotRunning}"
+                    Text="{Binding FileName}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
+                <ComboBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="100"
+                    Margin="10,0,0,0"
+                    IsEnabled="{Binding IsNotRunning}"
+                    ItemsSource="{Binding FileTypes}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged"
+                    SelectedItem="{Binding FileType}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
+            </Grid>
             <TextBlock
-                Grid.Row="4"
-                Margin="10"
-                Text="File name" />
-            <TextBox
                 Grid.Row="5"
-                IsEnabled="{Binding IsNotRunning}"
-                Text="{Binding FileName}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
-            <TextBlock
-                Grid.Row="5"
-                Margin="10,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Text=".cab" />
-            <TextBlock
-                Grid.Row="6"
                 Margin="10"
                 Text="Compression type" />
             <ComboBox
-                Grid.Row="7"
+                Grid.Row="6"
                 Width="480"
                 IsEnabled="{Binding IsNotRunning}"
                 ItemsSource="{Binding CompressionTypes}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged"
