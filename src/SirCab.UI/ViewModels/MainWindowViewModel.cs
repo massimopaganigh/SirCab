@@ -37,6 +37,12 @@
         private bool _isNotRunning = true;
 
         [ObservableProperty]
+        private bool _isNotUpToDate;
+
+        [ObservableProperty]
+        private bool _isUpdating = false;
+
+        [ObservableProperty]
         private string? _logOut;
 
         [ObservableProperty]
@@ -44,6 +50,9 @@
 
         [ObservableProperty]
         private string _title = $"SirCab ({Assembly.GetExecutingAssembly().GetName().Version?.ToString()} - {AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName})";
+
+        [ObservableProperty]
+        private string? _upToDateText;
 
         [RelayCommand]
         private async Task BrowseDestinationDirectoryAsync()
@@ -81,6 +90,29 @@
             }
         }
 
+        [RelayCommand]
+        private async Task DownloadAsync()
+        {
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    IsNotRunning = false;
+                    IsUpdating = true;
+
+                    IUpdateService updateService = new UpdateService();
+
+                    await updateService.DownloadAndInstallUpdateAsync();
+                }
+                catch (Exception) { }
+                finally
+                {
+                    IsUpdating = false;
+                    IsNotRunning = true;
+                }
+            });
+        }
+
         private static TopLevel? GetTopLevel()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
@@ -106,9 +138,34 @@
         [RelayCommand]
         private async Task RunAsync() => await RunAsync(null);
 
-        public async Task RunAsync(string[]? args)
+        public async Task CheckForUpdatesAsync()
         {
             await Task.Run(async () =>
+            {
+                try
+                {
+                    IUpdateService updateService = new UpdateService();
+
+                    Version? currentLocalVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                    Version? currentRemoteVersion = Version.TryParse(await updateService.GetCurrentVersionAsync(), out var parsedVersion) ? parsedVersion : null;
+
+                    if (currentLocalVersion == null
+                        || currentRemoteVersion == null)
+                        return;
+
+                    if (currentLocalVersion < currentRemoteVersion)
+                    {
+                        UpToDateText = $"Update available: {currentLocalVersion} -> {currentRemoteVersion}";
+                        IsNotUpToDate = true;
+                    }
+                }
+                catch (Exception) { }
+            });
+        }
+
+        public async Task RunAsync(string[]? args)
+        {
+            await Task.Run(() =>
             {
                 try
                 {
@@ -118,7 +175,8 @@
                     IConfigurationService configurationService = new ConfigurationService();
                     Configuration configuration;
 
-                    if (args != null && args.Length > 0)
+                    if (args != null
+                        && args.Length > 0)
                     {
                         configuration = configurationService.FromArgs(args);
 
@@ -196,15 +254,12 @@
                 }
                 finally
                 {
-                    IUpdateService updateService = new UpdateService();
-
-                    await updateService.CheckForUpdateAsync();
-
                     Log.CloseAndFlush();
 
                     IsNotRunning = true;
 
-                    if (args != null && args.Length > 0)
+                    if (args != null
+                        && args.Length > 0)
                         Environment.Exit(Environment.ExitCode);
                 }
             });

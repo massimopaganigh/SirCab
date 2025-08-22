@@ -21,8 +21,13 @@ namespace SirCab.UI.Views
 
         private void OnLoaaded(object? sender, EventArgs e)
         {
-            if (DataContext is MainWindowViewModel viewModel && Program.Args != null)
-                _ = viewModel.RunAsync(Program.Args);
+            if (DataContext is MainWindowViewModel viewModel)
+            {
+                _ = viewModel.CheckForUpdatesAsync();
+
+                if (Program.Args != null)
+                    _ = viewModel.RunAsync(Program.Args);
+            }
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
