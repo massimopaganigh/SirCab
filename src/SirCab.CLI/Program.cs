@@ -2,8 +2,6 @@
 {
     internal class Program
     {
-        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
-
         private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             string errorData = e.Data ?? string.Empty;
@@ -15,6 +13,8 @@
 
             Environment.ExitCode = 1;
         }
+
+        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
 
         public static async Task Main(string[] args)
         {

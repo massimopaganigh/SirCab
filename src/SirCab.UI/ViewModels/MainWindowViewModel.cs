@@ -89,12 +89,24 @@
             return null;
         }
 
-        private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e) => Log.Error($"(makecab.exe) {e.Data ?? string.Empty}");
+        private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            string errorData = e.Data ?? string.Empty;
+
+            Log.Error($"(makecab.exe) {errorData}");
+
+            if (string.IsNullOrEmpty(errorData))
+                return;
+
+            Environment.ExitCode = 1;
+        }
 
         private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
 
         [RelayCommand]
-        private async Task RunAsync()
+        private async Task RunAsync() => await RunAsync(null);
+
+        public async Task RunAsync(string[]? args)
         {
             await Task.Run(async () =>
             {
@@ -104,14 +116,28 @@
                     LogOut = null;
                     Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).CreateLogger();
                     IConfigurationService configurationService = new ConfigurationService();
-                    Configuration configuration = new()
+                    Configuration configuration;
+
+                    if (args != null && args.Length > 0)
                     {
-                        SourceDirectory = SourceDirectory,
-                        DestinationDirectory = DestinationDirectory,
-                        FileName = FileName,
-                        FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
-                        CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
-                    };
+                        configuration = configurationService.FromArgs(args);
+
+                        SourceDirectory = configuration.SourceDirectory;
+                        DestinationDirectory = configuration.DestinationDirectory;
+                        FileName = configuration.FileName;
+                        FileType = configuration.FileType?.ToString();
+                        CompressionType = configuration.CompressionType?.ToString();
+                    }
+                    else
+                        configuration = new()
+                        {
+                            SourceDirectory = SourceDirectory,
+                            DestinationDirectory = DestinationDirectory,
+                            FileName = FileName,
+                            FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
+                            CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
+                        };
+
                     ISubstService substService = new SubstService();
                     IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
                     string? ddfFilePath = ddfFileService.Create();
@@ -120,12 +146,16 @@
                     {
                         Log.Error("Ddf file path is null or empty.");
 
+                        Environment.ExitCode = 1;
+
                         return;
                     }
 
                     if (!File.Exists(ddfFilePath))
                     {
                         Log.Error("Ddf file does not exist.");
+
+                        Environment.ExitCode = 1;
 
                         return;
                     }
@@ -161,6 +191,8 @@
                 catch (Exception ex)
                 {
                     Log.Error(ex, nameof(RunAsync));
+
+                    Environment.ExitCode = 1;
                 }
                 finally
                 {
@@ -171,6 +203,9 @@
                     Log.CloseAndFlush();
 
                     IsNotRunning = true;
+
+                    if (args != null && args.Length > 0)
+                        Environment.Exit(Environment.ExitCode);
                 }
             });
         }
