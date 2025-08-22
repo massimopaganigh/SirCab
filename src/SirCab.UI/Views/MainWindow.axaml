@@ -2,6 +2,7 @@
     x:Class="SirCab.UI.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:SirCab.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:SirCab.UI.ViewModels"
@@ -38,9 +39,11 @@
             <Border
                 Grid.Row="0"
                 Background="Green"
-                CornerRadius="20,20,10,10"
                 IsVisible="{Binding IsNotUpToDate}"
                 Padding="5">
+                <Border.CornerRadius>
+                    <Binding Converter="{x:Static converters:BooleanToCornerRadiusConverter.Instance}" Path="IsUpdating" />
+                </Border.CornerRadius>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
