@@ -77,10 +77,10 @@ namespace SirCab.CORE.Test.Services
         }
 
         [Fact]
-        public void FromArgs_WithFourArguments_ValidCompressionType_SetsAllProperties()
+        public void FromArgs_WithFiveArguments_ValidCompressionType_SetsAllProperties()
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "MSZIP"];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", "MSZIP"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -90,6 +90,7 @@ namespace SirCab.CORE.Test.Services
             Assert.Equal("C:\\Source", result.SourceDirectory);
             Assert.Equal("C:\\Destination", result.DestinationDirectory);
             Assert.Equal("test.cab", result.FileName);
+            Assert.Equal(FileType.Cab, result.FileType);
             Assert.Equal(CompressionType.MSZIP, result.CompressionType);
         }
 
@@ -97,7 +98,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithValidCompressionType_None_SetsCompressionTypeToNone()
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "None"];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", "None"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -111,7 +112,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithValidCompressionType_LZX_SetsCompressionTypeToLZX()
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "LZX"];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", "LZX"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -125,7 +126,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithCompressionType_CaseInsensitive_SetsCorrectCompressionType()
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "mszip"];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", "mszip"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -139,7 +140,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithCompressionType_MixedCase_SetsCorrectCompressionType()
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "LzX"];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", "LzX"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -181,10 +182,10 @@ namespace SirCab.CORE.Test.Services
         }
 
         [Fact]
-        public void FromArgs_WithMoreThanFourArguments_IgnoresExtraArguments()
+        public void FromArgs_WithMoreThanFiveArguments_IgnoresExtraArguments()
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "MSZIP", "ExtraArg1", "ExtraArg2"];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", "MSZIP", "ExtraArg1", "ExtraArg2"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -201,7 +202,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithEmptyStringArguments_SetsEmptyStrings()
         {
             // Arrange
-            string[] args = ["", "", "", ""];
+            string[] args = ["", "", "", "", ""];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -218,7 +219,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithNullArgumentInArray_SetsNullValue()
         {
             // Arrange
-            string[] args = [null!, "C:\\Destination", "test.cab", "MSZIP"];
+            string[] args = [null!, "C:\\Destination", "test.cab", "Cab", "MSZIP"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -235,7 +236,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithWhitespaceArguments_PreservesWhitespace()
         {
             // Arrange
-            string[] args = [" ", "  ", "   ", "MSZIP"];
+            string[] args = [" ", "  ", "   ", "Cab", "MSZIP"];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -261,7 +262,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithValidCompressionTypes_ParsesCorrectly(string compressionTypeString, CompressionType expectedCompressionType)
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", compressionTypeString];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", compressionTypeString];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -278,7 +279,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithNumericCompressionTypes_ParsesCorrectly(string numericCompressionType, CompressionType expectedCompressionType)
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", numericCompressionType];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", numericCompressionType];
 
             // Act
             var result = _configurationService.FromArgs(args);
@@ -317,7 +318,7 @@ namespace SirCab.CORE.Test.Services
         public void FromArgs_WithOutOfRangeNumericCompressionTypes_ParsesAsUnknownEnumValue(string numericCompressionType)
         {
             // Arrange
-            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", numericCompressionType];
+            string[] args = ["C:\\Source", "C:\\Destination", "test.cab", "Cab", numericCompressionType];
 
             // Act
             var result = _configurationService.FromArgs(args);

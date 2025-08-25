@@ -2,8 +2,6 @@
 {
     internal class Program
     {
-        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
-
         private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             string errorData = e.Data ?? string.Empty;
@@ -15,6 +13,8 @@
 
             Environment.ExitCode = 1;
         }
+
+        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
 
         public static async Task Main(string[] args)
         {
@@ -39,6 +39,10 @@
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
                 Configuration configuration = configurationService.FromArgs(args);
+
+                if (configuration.LogEnabled == true)
+                    Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File(Path.Combine(AppContext.BaseDirectory, "SirCab.log")).CreateLogger();
+
                 ISubstService substService = new SubstService();
                 IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
                 string? ddfFilePath = ddfFileService.Create();

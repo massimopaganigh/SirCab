@@ -37,6 +37,15 @@
         private bool _isNotRunning = true;
 
         [ObservableProperty]
+        private bool _isNotUpToDate;
+
+        [ObservableProperty]
+        private bool _isUpdating = false;
+
+        [ObservableProperty]
+        private bool _logEnabled = false;
+
+        [ObservableProperty]
         private string? _logOut;
 
         [ObservableProperty]
@@ -44,6 +53,9 @@
 
         [ObservableProperty]
         private string _title = $"SirCab ({Assembly.GetExecutingAssembly().GetName().Version?.ToString()} - {AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName})";
+
+        [ObservableProperty]
+        private string? _upToDateText;
 
         [RelayCommand]
         private async Task BrowseDestinationDirectoryAsync()
@@ -81,6 +93,29 @@
             }
         }
 
+        [RelayCommand]
+        private async Task DownloadAsync()
+        {
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    IsNotRunning = false;
+                    IsUpdating = true;
+
+                    IUpdateService updateService = new UpdateService();
+
+                    await updateService.DownloadAndInstallUpdateAsync();
+                }
+                catch (Exception) { }
+                finally
+                {
+                    IsUpdating = false;
+                    IsNotRunning = true;
+                }
+            });
+        }
+
         private static TopLevel? GetTopLevel()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } mainWindow })
@@ -89,14 +124,51 @@
             return null;
         }
 
-        private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e) => Log.Error($"(makecab.exe) {e.Data ?? string.Empty}");
+        private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            string errorData = e.Data ?? string.Empty;
+
+            Log.Error($"(makecab.exe) {errorData}");
+
+            if (string.IsNullOrEmpty(errorData))
+                return;
+
+            Environment.ExitCode = 1;
+        }
 
         private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e) => Log.Information($"(makecab.exe) {e.Data ?? string.Empty}");
 
         [RelayCommand]
-        private async Task RunAsync()
+        private async Task RunAsync() => await RunAsync(null);
+
+        public async Task CheckForUpdatesAsync()
         {
             await Task.Run(async () =>
+            {
+                try
+                {
+                    IUpdateService updateService = new UpdateService();
+
+                    Version? currentLocalVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                    Version? currentRemoteVersion = Version.TryParse(await updateService.GetCurrentVersionAsync(), out var parsedVersion) ? parsedVersion : null;
+
+                    if (currentLocalVersion == null
+                        || currentRemoteVersion == null)
+                        return;
+
+                    if (currentLocalVersion < currentRemoteVersion)
+                    {
+                        UpToDateText = $"Update available: {currentLocalVersion} -> {currentRemoteVersion}";
+                        IsNotUpToDate = true;
+                    }
+                }
+                catch (Exception) { }
+            });
+        }
+
+        public async Task RunAsync(string[]? args)
+        {
+            await Task.Run(() =>
             {
                 try
                 {
@@ -104,14 +176,34 @@
                     LogOut = null;
                     Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).CreateLogger();
                     IConfigurationService configurationService = new ConfigurationService();
-                    Configuration configuration = new()
+                    Configuration configuration;
+
+                    if (args != null
+                        && args.Length > 0)
                     {
-                        SourceDirectory = SourceDirectory,
-                        DestinationDirectory = DestinationDirectory,
-                        FileName = FileName,
-                        FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
-                        CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
-                    };
+                        configuration = configurationService.FromArgs(args);
+
+                        SourceDirectory = configuration.SourceDirectory;
+                        DestinationDirectory = configuration.DestinationDirectory;
+                        FileName = configuration.FileName;
+                        FileType = configuration.FileType?.ToString();
+                        CompressionType = configuration.CompressionType?.ToString();
+                        LogEnabled = configuration.LogEnabled ?? false;
+                    }
+                    else
+                        configuration = new()
+                        {
+                            SourceDirectory = SourceDirectory,
+                            DestinationDirectory = DestinationDirectory,
+                            FileName = FileName,
+                            FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
+                            CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null,
+                            LogEnabled = LogEnabled
+                        };
+
+                    if (configuration.LogEnabled == true)
+                        Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).WriteTo.File(Path.Combine(AppContext.BaseDirectory, "SirCab.log")).CreateLogger();
+
                     ISubstService substService = new SubstService();
                     IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
                     string? ddfFilePath = ddfFileService.Create();
@@ -120,12 +212,16 @@
                     {
                         Log.Error("Ddf file path is null or empty.");
 
+                        Environment.ExitCode = 1;
+
                         return;
                     }
 
                     if (!File.Exists(ddfFilePath))
                     {
                         Log.Error("Ddf file does not exist.");
+
+                        Environment.ExitCode = 1;
 
                         return;
                     }
@@ -161,16 +257,18 @@
                 catch (Exception ex)
                 {
                     Log.Error(ex, nameof(RunAsync));
+
+                    Environment.ExitCode = 1;
                 }
                 finally
                 {
-                    IUpdateService updateService = new UpdateService();
-
-                    await updateService.CheckForUpdateAsync();
-
                     Log.CloseAndFlush();
 
                     IsNotRunning = true;
+
+                    if (args != null
+                        && args.Length > 0)
+                        Environment.Exit(Environment.ExitCode);
                 }
             });
         }
