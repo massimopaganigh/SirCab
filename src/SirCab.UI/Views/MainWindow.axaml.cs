@@ -6,6 +6,7 @@ namespace SirCab.UI.Views
         {
             InitializeComponent();
 
+            this.Loaded += OnLoaaded;
             this.DataContextChanged += OnDataContextChanged;
         }
 
@@ -16,6 +17,17 @@ namespace SirCab.UI.Views
 
             if (DataContext is INotifyPropertyChanged newViewModel)
                 newViewModel.PropertyChanged += OnViewModelPropertyChanged;
+        }
+
+        private void OnLoaaded(object? sender, EventArgs e)
+        {
+            if (DataContext is MainWindowViewModel viewModel)
+            {
+                _ = viewModel.CheckForUpdatesAsync();
+
+                if (Program.Args != null)
+                    _ = viewModel.RunAsync(Program.Args);
+            }
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)

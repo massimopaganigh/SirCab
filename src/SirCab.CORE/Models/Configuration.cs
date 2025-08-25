@@ -12,6 +12,8 @@
 
         public CompressionType? CompressionType { get; set; }
 
+        public bool? LogEnabled { get; set; } = false;
+
         public bool? SubstError { get; set; } = false;
     }
 }

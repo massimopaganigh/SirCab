@@ -2,6 +2,7 @@
 global using Avalonia.Controls;
 global using Avalonia.Controls.ApplicationLifetimes;
 global using Avalonia.Controls.Templates;
+global using Avalonia.Data.Converters;
 global using Avalonia.Data.Core.Plugins;
 global using Avalonia.Markup.Xaml;
 global using Avalonia.Platform.Storage;
@@ -26,6 +27,7 @@ global using System.Collections.Generic;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
+global using System.Globalization;
 global using System.IO;
 global using System.Linq;
 global using System.Reflection;
