@@ -39,6 +39,10 @@
                 Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
                 IConfigurationService configurationService = new ConfigurationService();
                 Configuration configuration = configurationService.FromArgs(args);
+
+                if (configuration.LogEnabled == true)
+                    Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File(Path.Combine(AppContext.BaseDirectory, "SirCab.log")).CreateLogger();
+
                 ISubstService substService = new SubstService();
                 IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
                 string? ddfFilePath = ddfFileService.Create();

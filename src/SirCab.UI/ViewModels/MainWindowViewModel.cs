@@ -43,6 +43,9 @@
         private bool _isUpdating = false;
 
         [ObservableProperty]
+        private bool _logEnabled = false;
+
+        [ObservableProperty]
         private string? _logOut;
 
         [ObservableProperty]
@@ -185,6 +188,7 @@
                         FileName = configuration.FileName;
                         FileType = configuration.FileType?.ToString();
                         CompressionType = configuration.CompressionType?.ToString();
+                        LogEnabled = configuration.LogEnabled ?? false;
                     }
                     else
                         configuration = new()
@@ -193,8 +197,12 @@
                             DestinationDirectory = DestinationDirectory,
                             FileName = FileName,
                             FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
-                            CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null
+                            CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null,
+                            LogEnabled = LogEnabled
                         };
+
+                    if (configuration.LogEnabled == true)
+                        Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).WriteTo.File(Path.Combine(AppContext.BaseDirectory, "SirCab.log")).CreateLogger();
 
                     ISubstService substService = new SubstService();
                     IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
