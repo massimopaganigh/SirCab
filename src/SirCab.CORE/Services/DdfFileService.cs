@@ -57,7 +57,7 @@
                     || _fileType == null)
                 {
                     Log.Error("Source directory, destination directory, file name, file type or compression type is null or empty.");
-                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType> [<log>]");
+                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType> [<logEnabled>]");
 
                     return null;
                 }
