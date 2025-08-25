@@ -2,7 +2,7 @@
 
 # <image src="src/SirCab.UI/favicon.ico" height="24"> SirCab
 
-Cabinet file creator. Usage: `SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType>`
+Cabinet file creator. Usage: `SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType> [<logEnabled>]`
 
 [![Release](https://img.shields.io/github/v/tag/massimopaganigh/sircab?label=Release)](https://github.com/massimopaganigh/sircab/releases/latest)
 [![License](https://img.shields.io/github/license/massimopaganigh/sircab?label=License)](https://github.com/massimopaganigh/sircab/blob/main/LICENSE)
