@@ -12,8 +12,10 @@
 
         public CompressionType? CompressionType { get; set; }
 
-        public bool? LogEnabled { get; set; } = false;
+        public CompressionWindowSize? CompressionWindowSize { get; set; }
 
-        public bool? SubstError { get; set; } = false;
+        public bool? LogEnabled { get; set; }
+
+        public bool? SubstError { get; set; }
     }
 }

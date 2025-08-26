@@ -2,7 +2,6 @@
 {
     public class DdfFileService(Configuration configuration, ISubstService substService) : IDdfFileService
     {
-        private const int _compressionMemory = 21;
         private const int _maxDdfFileRowInt = 4096;
 
         private /*readonly*/ string? _sourceDirectory = configuration.SourceDirectory;
@@ -10,6 +9,7 @@
         private readonly string? _fileName = configuration.FileName;
         private readonly FileType? _fileType = configuration.FileType;
         private readonly CompressionType? _compressionType = configuration.CompressionType;
+        private readonly CompressionWindowSize? _compressionWindowSize = configuration.CompressionWindowSize;
 
         private static List<DdfFileRow> GetDdfFileRowList(string directory) => GetDdfFileRowList(directory, directory);
 
@@ -57,7 +57,7 @@
                     || _fileType == null)
                 {
                     Log.Error("Source directory, destination directory, file name, file type or compression type is null or empty.");
-                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType> [<logEnabled>]");
+                    Log.Warning("Usage: SirCab.exe <sourceDirectory> <destinationDirectory> <fileName> <fileType> <compressionType> [<compressionWindowSize>] [<logEnabled>]");
 
                     return null;
                 }
@@ -119,7 +119,7 @@
                     case CompressionType.LZX:
                         ddfFileContent.AppendLine($@".Set Compress=on
 .Set CompressionType=LZX
-.Set CompressionMemory={_compressionMemory}");
+.Set CompressionMemory={_compressionWindowSize}");
                         break;
                 }
 
