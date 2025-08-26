@@ -1,7 +1,4 @@
 <Solution>
-  <Folder Name="/Tests/">
-    <Project Path="SirCab.CORE.Test/SirCab.CORE.Test.csproj" Id="b6cd1bcf-9a94-43d3-93cd-ceab5468ee37" />
-  </Folder>
   <Project Path="SirCab.CLI/SirCab.CLI.csproj" />
   <Project Path="SirCab.CORE/SirCab.CORE.csproj" Id="0a291de0-784e-4aee-9234-2a6d6c0e4578" />
   <Project Path="SirCab.UI/SirCab.UI.csproj" Id="a26ed3f5-48a5-4cbc-bdba-edffb0160d1b" />

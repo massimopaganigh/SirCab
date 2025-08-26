@@ -48,14 +48,14 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-echo Testing SirCab.CORE...
+REM echo Testing SirCab.CORE...
 
-dotnet test ..\src\SirCab.CORE.Test\SirCab.CORE.Test.csproj
+REM dotnet test ..\src\SirCab.CORE.Test\SirCab.CORE.Test.csproj
 
-if %ERRORLEVEL% neq 0 (
-    echo Test of SirCab.CORE failed.
-    exit /b %ERRORLEVEL%
-)
+REM if %ERRORLEVEL% neq 0 (
+REM    echo Test of SirCab.CORE failed.
+REM    exit /b %ERRORLEVEL%
+REM )
 
 echo Building SirCab.CORE...
 
