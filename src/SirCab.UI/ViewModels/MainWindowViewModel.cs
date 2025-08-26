@@ -14,6 +14,21 @@
         ];
 
         [ObservableProperty]
+        private string? _compressionWindowSize = "MB2";
+
+        [ObservableProperty]
+        private List<string> _compressionWindowSizes =
+        [
+            "KB32",
+            "KB64",
+            "KB128",
+            "KB256",
+            "KB512",
+            "MB1",
+            "MB2"
+        ];
+
+        [ObservableProperty]
         private string? _destinationDirectory;
 
         [ObservableProperty]
@@ -124,6 +139,10 @@
             return null;
         }
 
+        partial void OnCompressionTypeChanged(string? value) => OnPropertyChanged(nameof(IsCompressionWindowSizeEnabled));
+
+        partial void OnIsNotRunningChanged(bool value) => OnPropertyChanged(nameof(IsCompressionWindowSizeEnabled));
+
         private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             string errorData = e.Data ?? string.Empty;
@@ -189,6 +208,7 @@
                         FileType = configuration.FileType?.ToString();
                         CompressionType = configuration.CompressionType?.ToString();
                         LogEnabled = configuration.LogEnabled ?? false;
+                        CompressionWindowSize = configuration.CompressionWindowSize?.ToString();
                     }
                     else
                         configuration = new()
@@ -198,7 +218,8 @@
                             FileName = FileName,
                             FileType = Enum.TryParse<FileType>(FileType, true, out var fileType) ? fileType : null,
                             CompressionType = Enum.TryParse<CompressionType>(CompressionType, true, out var compressionType) ? compressionType : null,
-                            LogEnabled = LogEnabled
+                            LogEnabled = LogEnabled,
+                            CompressionWindowSize = Enum.TryParse<CompressionWindowSize>(CompressionWindowSize, true, out var compressionWindowSize) ? compressionWindowSize : CORE.Enums.CompressionWindowSize.MB2
                         };
 
                     if (configuration.LogEnabled == true)
@@ -272,5 +293,7 @@
                 }
             });
         }
+
+        public bool IsCompressionWindowSizeEnabled => IsNotRunning && CompressionType == "LZX";
     }
 }

@@ -153,22 +153,47 @@
                 <ComboBox
                     Grid.Row="1"
                     Grid.Column="1"
-                    Width="100"
+                    Width="125"
                     Margin="10,0,0,0"
                     IsEnabled="{Binding IsNotRunning}"
                     ItemsSource="{Binding FileTypes}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged"
                     SelectedItem="{Binding FileType}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
             </Grid>
-            <TextBlock
-                Grid.Row="6"
-                Margin="10"
-                Text="Compression type" />
-            <ComboBox
-                Grid.Row="7"
-                Width="480"
-                IsEnabled="{Binding IsNotRunning}"
-                ItemsSource="{Binding CompressionTypes}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged"
-                SelectedItem="{Binding CompressionType}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
+            <Grid Grid.Row="6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="10"
+                    Text="Compression type" />
+                <ComboBox
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Width="345"
+                    IsEnabled="{Binding IsNotRunning}"
+                    ItemsSource="{Binding CompressionTypes}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged"
+                    SelectedItem="{Binding CompressionType}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="20,10,10,10"
+                    Text="Windows size" />
+                <ComboBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="125"
+                    Margin="10,0,0,0"
+                    IsEnabled="{Binding IsCompressionWindowSizeEnabled}"
+                    ItemsSource="{Binding CompressionWindowSizes}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged"
+                    SelectedItem="{Binding CompressionWindowSize}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged" />
+            </Grid>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
