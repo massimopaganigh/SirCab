@@ -119,7 +119,7 @@
                     case CompressionType.LZX:
                         ddfFileContent.AppendLine($@".Set Compress=on
 .Set CompressionType=LZX
-.Set CompressionMemory={_compressionWindowSize}");
+.Set CompressionMemory={(int)_compressionWindowSize.GetValueOrDefault()}");
                         break;
                 }
 
