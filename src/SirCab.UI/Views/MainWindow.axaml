@@ -102,12 +102,18 @@
                 Grid.Row="1"
                 Margin="10"
                 Text="Source directory" />
-            <Button
+            <SplitButton
                 Grid.Row="1"
                 HorizontalAlignment="Right"
                 Command="{Binding BrowseSourceDirectoryCommand}"
                 Content="Browse"
-                IsEnabled="{Binding IsNotRunning}" />
+                IsEnabled="{Binding IsNotRunning}">
+                <SplitButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Command="{Binding OpenSourceDirectoryCommand}" Header="Open" />
+                    </MenuFlyout>
+                </SplitButton.Flyout>
+            </SplitButton>
             <TextBox
                 Grid.Row="2"
                 IsEnabled="{Binding IsNotRunning}"
@@ -116,12 +122,21 @@
                 Grid.Row="3"
                 Margin="10"
                 Text="Destination directory" />
-            <Button
+            <SplitButton
                 Grid.Row="3"
                 HorizontalAlignment="Right"
                 Command="{Binding BrowseDestinationDirectoryCommand}"
                 Content="Browse"
-                IsEnabled="{Binding IsNotRunning}" />
+                IsEnabled="{Binding IsNotRunning}">
+                <SplitButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Command="{Binding SourceDirectoryAsDestinationDirectoryCommand}" Header="Source directory" />
+                        <MenuItem Command="{Binding SourceDirectoryParentAsDestinationDirectoryCommand}" Header="Source directory parent" />
+                        <Separator />
+                        <MenuItem Command="{Binding OpenDestinationDirectoryCommand}" Header="Open" />
+                    </MenuFlyout>
+                </SplitButton.Flyout>
+            </SplitButton>
             <TextBox
                 Grid.Row="4"
                 IsEnabled="{Binding IsNotRunning}"

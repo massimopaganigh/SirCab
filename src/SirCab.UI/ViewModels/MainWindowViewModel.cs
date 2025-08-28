@@ -143,6 +143,54 @@
 
         partial void OnIsNotRunningChanged(bool value) => OnPropertyChanged(nameof(IsCompressionWindowSizeEnabled));
 
+        [RelayCommand]
+        private void OpenDestinationDirectory()
+        {
+            if (string.IsNullOrEmpty(DestinationDirectory)
+                || !Directory.Exists(DestinationDirectory))
+                return;
+
+            ProcessStartInfo startInfo = new()
+            {
+                CreateNoWindow = true,
+                FileName = "explorer.exe",
+                Arguments = DestinationDirectory.WithQuotes(),
+                //RedirectStandardOutput = true,
+                //RedirectStandardError = true,
+                UseShellExecute = false
+            };
+            using Process process = new()
+            {
+                StartInfo = startInfo
+            };
+
+            process.Start();
+        }
+
+        [RelayCommand]
+        private void OpenSourceDirectory()
+        {
+            if (string.IsNullOrEmpty(SourceDirectory)
+                || !Directory.Exists(SourceDirectory))
+                return;
+
+            ProcessStartInfo startInfo = new()
+            {
+                CreateNoWindow = true,
+                FileName = "explorer.exe",
+                Arguments = SourceDirectory.WithQuotes(),
+                //RedirectStandardOutput = true,
+                //RedirectStandardError = true,
+                UseShellExecute = false
+            };
+            using Process process = new()
+            {
+                StartInfo = startInfo
+            };
+
+            process.Start();
+        }
+
         private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             string errorData = e.Data ?? string.Empty;
@@ -159,6 +207,29 @@
 
         [RelayCommand]
         private async Task RunAsync() => await RunAsync(null);
+
+        [RelayCommand]
+        private void SourceDirectoryAsDestinationDirectory()
+        {
+            if (string.IsNullOrEmpty(SourceDirectory))
+                return;
+
+            DestinationDirectory = SourceDirectory;
+        }
+
+        [RelayCommand]
+        private void SourceDirectoryParentAsDestinationDirectory()
+        {
+            if (string.IsNullOrEmpty(SourceDirectory))
+                return;
+
+            string? sourceDirectoryParent = Directory.GetParent(SourceDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar))?.FullName;
+
+            if (string.IsNullOrEmpty(sourceDirectoryParent))
+                return;
+
+            DestinationDirectory = $"{sourceDirectoryParent}{Path.DirectorySeparatorChar}";
+        }
 
         public async Task CheckForUpdatesAsync()
         {
