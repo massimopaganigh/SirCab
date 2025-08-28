@@ -223,7 +223,14 @@
                         };
 
                     if (configuration.LogEnabled == true)
-                        Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).WriteTo.File(Path.Combine(AppContext.BaseDirectory, "SirCab.log")).CreateLogger();
+                    {
+                        string logFilePath = Path.Combine(AppContext.BaseDirectory, "SirCab.log");
+
+                        if (File.Exists(logFilePath))
+                            File.Delete(logFilePath);
+
+                        Log.Logger = new LoggerConfiguration().WriteTo.Sink(new UILogEventSink(this)).WriteTo.File(logFilePath).CreateLogger();
+                    }
 
                     ISubstService substService = new SubstService();
                     IDdfFileService ddfFileService = new DdfFileService(configuration, substService);
@@ -268,6 +275,16 @@
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                     process.WaitForExit();
+
+                    List<string> createdFiles =
+                    [
+                        Path.Combine(AppContext.BaseDirectory, "setup.inf"),
+                        Path.Combine(AppContext.BaseDirectory, "setup.rpt")
+                    ];
+
+                    foreach (var createdFile in createdFiles)
+                        if (File.Exists(createdFile))
+                            File.Delete(createdFile);
 
                     if (configuration.SubstError == false)
                     {

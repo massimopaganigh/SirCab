@@ -9,6 +9,7 @@
     <AssemblyName>SirCab</AssemblyName>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <PublishAot>True</PublishAot>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,4 +37,15 @@
   <ItemGroup>
     <ProjectReference Include="..\SirCab.CORE\SirCab.CORE.csproj" />
   </ItemGroup>
+
+  <!-- Move Avalonia native DLLs to bin folder after publish -->
+  <Target Name="MoveAvaloniaLibsToBindir" AfterTargets="Publish">
+	<ItemGroup>
+	  <AvaloniaLibs Include="$(PublishDir)av_libglesv2.dll" />
+	  <AvaloniaLibs Include="$(PublishDir)libHarfBuzzSharp.dll" />
+	  <AvaloniaLibs Include="$(PublishDir)libSkiaSharp.dll" />
+	</ItemGroup>
+	<MakeDir Directories="$(PublishDir)bin" />
+	<Move SourceFiles="@(AvaloniaLibs)" DestinationFolder="$(PublishDir)bin" />
+	</Target>
 </Project>

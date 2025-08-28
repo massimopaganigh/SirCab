@@ -16,6 +16,6 @@
 
         public bool? LogEnabled { get; set; }
 
-        public bool? SubstError { get; set; }
+        public bool? SubstError { get; set; } = false;
     }
 }
