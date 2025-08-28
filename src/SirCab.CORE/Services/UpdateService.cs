@@ -22,11 +22,11 @@
                 if (currentLocalVersion >= currentRemoteVersion)
                     return;
 
-                string manifestUrl = $"https://raw.githubusercontent.com/microsoft/winget-pkgs/refs/heads/master/manifests/s/SirCab/SirCab/{currentRemoteVersion}/SirCab.SirCab.yaml";
+                string manifestUrl = $"https://raw.githubusercontent.com/microsoft/winget-pkgs/refs/heads/master/manifests/s/SirCab/SirCabCLI/{currentRemoteVersion}/SirCab.SirCabCLI.yaml";
                 using HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync(manifestUrl);
 
                 if (httpResponseMessage.IsSuccessStatusCode)
-                    Log.Information("Update available: {0} -> {1}. Run 'winget upgrade SirCab'.", currentLocalVersion, currentRemoteVersion);
+                    Log.Information("Update available: {0} -> {1}. Run 'winget upgrade SirCab.SirCabCLI'.", currentLocalVersion, currentRemoteVersion);
                 else
                     Log.Information("Update available: {0} -> {1}. Download the latest version from 'https://github.com/massimopaganigh/SirCab/releases/latest'.", currentLocalVersion, currentRemoteVersion);
             }
